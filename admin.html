@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin - MS47</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b; --card:#141416; --card2:#1a1a1d; --line:#26262a;
+  --accent:#ff2b3d; --accent2:#00e5c7; --text:#f2f2f2; --muted:#9a9aa0;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);padding:26px 16px 60px;}
+h1{font-family:'Poppins',Arial,sans-serif;font-weight:700;}
+h2{font-family:'Poppins',Arial,sans-serif;font-weight:600;margin:26px 0 14px;font-size:17px;display:flex;align-items:center;gap:10px;}
+h2::before{content:"";display:block;width:4px;height:18px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:3px;flex-shrink:0;}
+
+.card{background:var(--card);border-radius:14px;padding:22px;max-width:750px;margin:0 auto 20px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+.card-ancha{max-width:960px;}
+
+label{display:block;margin-top:14px;margin-bottom:6px;font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0.2px;}
+
+input[type=text],input[type=password],textarea,select{
+  width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:14px;transition:border-color 0.2s, box-shadow 0.2s;
+}
+input[type=text]::placeholder,input[type=password]::placeholder,textarea::placeholder{color:#6a6a70;}
+input[type=text]:focus,input[type=password]:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,43,61,0.15);
+}
+textarea{min-height:70px;resize:vertical;}
+
+button{cursor:pointer;border:none;border-radius:8px;padding:11px 18px;font-weight:700;margin-top:10px;margin-right:8px;font-size:14px;transition:transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;}
+button:active{transform:scale(0.97);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#c4142a);color:white;box-shadow:0 6px 18px rgba(255,43,61,0.3);}
+.btn-primary:hover{box-shadow:0 8px 22px rgba(255,43,61,0.45);transform:translateY(-1px);}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--line);}
+.btn-secondary:hover{background:#232327;border-color:#3a3a40;}
+.btn-danger{background:rgba(255,43,61,0.12);color:#ff9aa2;border:1px solid rgba(255,43,61,0.3);}
+.btn-danger:hover{background:rgba(255,43,61,0.22);color:#ffb3ba;}
+
+.fila{display:flex;gap:8px;margin-top:8px;align-items:center;}
+.fila input{flex:1;}
+.fila button{margin:0;padding:9px 12px;}
+
+#panel{display:none;max-width:950px;margin:0 auto;}
+#login{max-width:360px;margin:110px auto;text-align:center;}
+#login h1{font-size:22px;margin-bottom:22px;}
+#login .card{padding:28px 24px;}
+#login button.btn-primary{width:100%;}
+
+.pagina-item{background:var(--card);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;border:1px solid var(--line);transition:border-color 0.2s;}
+.pagina-item:hover{border-color:#3a3a40;}
+.pagina-info{flex:1;min-width:200px;}
+.pagina-info .titulo{font-weight:700;font-size:15px;}
+.pagina-info .link{font-size:12px;color:var(--accent2);word-break:break-all;margin-top:4px;}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:950px;margin:0 auto 18px;flex-wrap:wrap;gap:10px;}
+.topbar h1{font-size:20px;}
+
+.msg{margin-top:12px;font-size:13px;}
+.msg:not(:empty){padding:10px 12px;border-radius:8px;}
+.msg.error{color:#ff8a93;background:rgba(255,43,61,0.1);}
+.msg.ok{color:#6bffb0;background:rgba(0,229,199,0.1);}
+
+small{color:var(--muted);display:block;margin-top:4px;font-size:12px;}
+.tabs{display:flex;gap:10px;max-width:950px;margin:0 auto 20px;}
+.tab-btn{background:var(--card);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:14px;transition:0.2s;}
+.tab-btn:hover{color:var(--text);border-color:#3a3a40;}
+.tab-btn.active{background:linear-gradient(135deg,var(--accent),#c4142a);color:white;border-color:transparent;box-shadow:0 6px 18px rgba(255,43,61,0.3);}
+.hint{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.5;}
+
+.grupo-media{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px;}
+.grupo-media label:first-of-type{margin-top:0;}
+.grupo-media + .grupo-media{margin-top:10px;}
+
+details.seccion{background:var(--card2);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden;}
+.grid-secciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start;margin-top:16px;}
+.grid-secciones details.seccion{margin-top:0;}
+details.seccion summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:14px;list-style:none;display:flex;align-items:center;justify-content:space-between;user-select:none;font-family:'Poppins',Arial,sans-serif;}
+details.seccion summary::-webkit-details-marker{display:none;}
+details.seccion summary::after{content:"▾";color:var(--muted);transition:transform 0.2s;font-size:13px;}
+details.seccion[open] summary{border-bottom:1px solid var(--line);}
+details.seccion[open] summary::after{transform:rotate(180deg);}
+details.seccion summary:hover{background:rgba(255,255,255,0.03);}
+details.seccion .contenido-seccion{padding:16px;}
+details.seccion .contenido-seccion > label:first-child{margin-top:0;}
+.subgrupo-titulo{font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:0.6px;margin-top:16px;margin-bottom:6px;}
+.subgrupo-titulo:first-child{margin-top:0;}
+
+a.btn-secondary,a.btn-primary,a.btn-danger{cursor:pointer;border-radius:8px;padding:11px 18px;font-weight:700;margin-top:10px;margin-right:8px;font-size:14px;display:inline-block;text-decoration:none;transition:transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;}
+a.btn-secondary:active,a.btn-primary:active,a.btn-danger:active{transform:scale(0.97);}
+
+.mini-thumb{width:54px;height:54px;object-fit:cover;border-radius:9px;border:1px solid var(--line);flex-shrink:0;background:var(--card2);}
+
+.grupo-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.grupo-panel{display:none;}
+.grupo-panel.active{display:block;}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>🔒 Panel Admin MS47</h1>
+  <div class="card">
+    <label>Clave de acceso</label>
+    <input type="password" id="loginPass" placeholder="Ingresá la clave">
+    <button class="btn-primary" id="btnLogin">Entrar</button>
+    <p class="msg error" id="loginMsg"></p>
+  </div>
+</div>
+
+<div id="panel">
+  <div class="topbar">
+    <h1>Panel Admin MS47</h1>
+    <button class="btn-secondary" id="btnLogout">Bloquear panel</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnJuegos" type="button">🎮 Juegos</button>
+    <button class="tab-btn" id="tabBtnSeries" type="button">📺 Series / Capítulos</button>
+  </div>
+
+  <div id="tabJuegos">
+
+  <div class="card card-ancha">
+    <h2 id="formTitulo">Nueva página</h2>
+
+    <label>Título del juego</label>
+    <input type="text" id="fTitulo" placeholder="Ej: God of War Ragnarök">
+
+    <label>Slug (parte del link, se genera solo)</label>
+    <input type="text" id="fSlug" placeholder="ej-god-of-war-ragnarok">
+
+    <label>Grupo / carpeta (opcional, para organizar la lista de abajo)</label>
+    <input type="text" id="fGrupo" list="listaGruposJuegos" placeholder="Ej: Terror, Favoritos, Para revisar...">
+    <datalist id="listaGruposJuegos"></datalist>
+
+    <div class="grid-secciones">
+
+    <details class="seccion" id="secFondo">
+      <summary>🖼️ Fondo del hero</summary>
+      <div class="contenido-seccion">
+        <div class="grupo-media">
+          <label>Imagen de fondo del hero (opcional)</label>
+          <input type="text" id="fFondo" placeholder="https://...">
+          <label>Video de fondo (opcional, YouTube, Drive o .mp4/.webm)</label>
+          <input type="text" id="fFondoVideo" placeholder="https://...">
+          <label>Modo</label>
+          <select id="fFondoModo">
+            <option value="hover">Hover (imagen, video al pasar el mouse)</option>
+            <option value="rotativo">Rotativo (alternan solos)</option>
+            <option value="video">Solo video (sin imagen)</option>
+          </select>
+          <p class="hint">Si solo cargás la imagen o solo el video, se usa eso nomás. Si cargás los dos, se aplica el modo elegido.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="seccion" id="secVideos">
+      <summary>🎬 Videos del hero (trailers)</summary>
+      <div class="contenido-seccion">
+        <p class="hint">Para cada posición podés poner solo un video, o un video + una imagen: en modo "Hover" se ve la imagen y el video se reproduce al pasar el mouse por encima; en modo "Rotativo" van alternando solos cada pocos segundos.</p>
+
+        <p class="subgrupo-titulo">Izquierda</p>
+        <div class="grupo-media">
+          <label>Video (YouTube, Drive o .mp4/.webm)</label>
+          <input type="text" id="fVideoIzq">
+          <label>Imagen (opcional, para hover/rotativo)</label>
+          <input type="text" id="fImagenIzq" placeholder="https://...">
+          <label>Modo</label>
+          <select id="fModoIzq">
+            <option value="hover">Hover (imagen, video al pasar el mouse)</option>
+            <option value="rotativo">Rotativo (alternan solos)</option>
+            <option value="video">Solo video (sin imagen)</option>
+          </select>
+        </div>
+
+        <p class="subgrupo-titulo">Centro</p>
+        <div class="grupo-media">
+          <label>Video (opcional)</label>
+          <input type="text" id="fVideoCentro">
+          <label>Imagen (opcional, para hover/rotativo)</label>
+          <input type="text" id="fImagenCentro" placeholder="https://...">
+          <label>Modo</label>
+          <select id="fModoCentro">
+            <option value="hover">Hover (imagen, video al pasar el mouse)</option>
+            <option value="rotativo">Rotativo (alternan solos)</option>
+            <option value="video">Solo video (sin imagen)</option>
+          </select>
+        </div>
+
+        <p class="subgrupo-titulo">Derecha</p>
+        <div class="grupo-media">
+          <label>Video (opcional)</label>
+          <input type="text" id="fVideoDer">
+          <label>Imagen (opcional, para hover/rotativo)</label>
+          <input type="text" id="fImagenDer" placeholder="https://...">
+          <label>Modo</label>
+          <select id="fModoDer">
+            <option value="hover">Hover (imagen, video al pasar el mouse)</option>
+            <option value="rotativo">Rotativo (alternan solos)</option>
+            <option value="video">Solo video (sin imagen)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
+    <details class="seccion" id="secDescargas" open>
+      <summary>⬇️ Descargas</summary>
+      <div class="contenido-seccion">
+        <label>Título de la sección de descargas</label>
+        <input type="text" id="fPeso" placeholder="Ej: DESCOMPRIMIDO (90GB) solo la parte 1 tiene acortador">
+
+        <label>Links de descarga</label>
+        <div id="descargasList"></div>
+        <button class="btn-secondary" id="btnAddDescarga" type="button">+ Agregar link</button>
+      </div>
+    </details>
+
+    <details class="seccion" id="secDetalles">
+      <summary>📋 Verificación y detalles</summary>
+      <div class="contenido-seccion">
+        <label>Link de verificación (YouTube, Drive o video directo, opcional)</label>
+        <input type="text" id="fVerificacion" placeholder="https://drive.google.com/file/d/.../view">
+
+        <label>Contenido / DLCs (una línea por ítem, opcional)</label>
+        <div id="contenidoList"></div>
+        <button class="btn-secondary" id="btnAddContenido" type="button">+ Agregar línea</button>
+
+        <label>Requisitos del sistema (una línea por ítem, opcional)</label>
+        <div id="requisitosList"></div>
+        <button class="btn-secondary" id="btnAddRequisito" type="button">+ Agregar línea</button>
+
+        <label>Información del juego (una línea por ítem, opcional)</label>
+        <div id="infoJuegoList"></div>
+        <button class="btn-secondary" id="btnAddInfo" type="button">+ Agregar línea</button>
+      </div>
+    </details>
+
+    <details class="seccion" id="secGaleria">
+      <summary>📸 Galería de capturas</summary>
+      <div class="contenido-seccion">
+        <label>Galería (una URL de imagen por fila, opcional)</label>
+        <div id="galeriaList"></div>
+        <button class="btn-secondary" id="btnAddImg" type="button">+ Agregar imagen</button>
+      </div>
+    </details>
+
+    </div><!-- /grid-secciones -->
+
+    <div>
+      <button class="btn-primary" id="btnGuardar" type="button">Guardar página</button>
+      <button class="btn-secondary" id="btnCancelar" type="button" style="display:none;">Cancelar edición</button>
+    </div>
+    <p class="msg" id="formMsg"></p>
+  </div>
+
+  <h2>Páginas existentes</h2>
+  <div id="listaPaginas"></div>
+
+  </div><!-- /tabJuegos -->
+
+  <div id="tabSeries" style="display:none;">
+
+  <div class="card card-ancha">
+    <h2 id="formTituloSerie">Nueva serie</h2>
+
+    <label>Título de la serie</label>
+    <input type="text" id="sTitulo" placeholder="Ej: O11CE">
+
+    <label>Slug (parte del link, se genera solo)</label>
+    <input type="text" id="sSlug" placeholder="o11ce">
+
+    <label>Grupo / carpeta (opcional, para organizar la lista de abajo)</label>
+    <input type="text" id="sGrupo" list="listaGruposSeries" placeholder="Ej: Anime, Terror, Favoritos...">
+    <datalist id="listaGruposSeries"></datalist>
+
+    <label>Tipo</label>
+    <select id="sTipoContenido">
+      <option value="serie">Serie (varios capítulos)</option>
+      <option value="pelicula">Película (un solo video)</option>
+    </select>
+
+    <div class="grid-secciones">
+
+    <details class="seccion" id="secFicha">
+      <summary>🖼️ Ficha (poster, fondo, sinopsis)</summary>
+      <div class="contenido-seccion">
+        <label>Poster / imagen vertical (URL, opcional)</label>
+        <input type="text" id="sPoster" placeholder="https://...">
+
+        <label>Fondo de la ficha (imagen o video, URL, opcional)</label>
+        <input type="text" id="sFondo" placeholder="https://... (imagen, .mp4, o link de YouTube)">
+        <p class="hint">Podés poner una imagen normal, un video .mp4, o un link de YouTube — si es video, se reproduce de fondo en loop y sin sonido.</p>
+
+        <label>Año (opcional)</label>
+        <input type="text" id="sAnio" placeholder="2024">
+
+        <label>Género (opcional)</label>
+        <input type="text" id="sGenero" placeholder="Acción, Aventura, Anime...">
+
+        <label>Sinopsis (opcional)</label>
+        <textarea id="sSinopsis" placeholder="De qué trata..."></textarea>
+      </div>
+    </details>
+
+    <details class="seccion" id="secCapitulos" open>
+      <summary>🎬 Capítulos</summary>
+      <div class="contenido-seccion">
+        <p class="hint">Pegá el link normal de YouTube (podés usar videos "no listados", funcionan igual), el link para compartir de Google Drive, o un link directo a un video (.mp4/.webm, como los trailers de Steam). Se detecta solo cuál es cuál. Si es una película, cargá un solo capítulo.</p>
+        <div id="capitulosList"></div>
+        <button class="btn-secondary" id="btnAddCapitulo" type="button">+ Agregar capítulo</button>
+      </div>
+    </details>
+
+    </div><!-- /grid-secciones -->
+
+    <div>
+      <button class="btn-primary" id="btnGuardarSerie" type="button">Guardar serie</button>
+      <button class="btn-secondary" id="btnCancelarSerie" type="button" style="display:none;">Cancelar edición</button>
+    </div>
+    <p class="msg" id="formMsgSerie"></p>
+  </div>
+
+  <h2>Series existentes</h2>
+  <div id="listaSeries"></div>
+
+  </div><!-- /tabSeries -->
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
+    authDomain: "tv-fulvo.firebaseapp.com",
+    projectId: "tv-fulvo",
+    storageBucket: "tv-fulvo.firebasestorage.app",
+    messagingSenderId: "733955226142",
+    appId: "1:733955226142:web:d49871efff59452b604c0f",
+    databaseURL: "https://tv-fulvo-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ⚠️ Cambiá esta clave por la que quieras usar para entrar al panel
+const CLAVE_ADMIN = "ms47admin";
+
+const loginDiv = document.getElementById("login");
+const panelDiv = document.getElementById("panel");
+const loginMsg = document.getElementById("loginMsg");
+const formMsg = document.getElementById("formMsg");
+
+document.getElementById("btnLogin").addEventListener("click", intentarLogin);
+document.getElementById("loginPass").addEventListener("keydown", (e) => { if(e.key === "Enter") intentarLogin(); });
+
+function intentarLogin(){
+  const pass = document.getElementById("loginPass").value;
+  if(pass === CLAVE_ADMIN){
+    loginDiv.style.display = "none";
+    panelDiv.style.display = "block";
+    cargarLista();
+  }else{
+    loginMsg.textContent = "Clave incorrecta.";
+  }
+}
+
+document.getElementById("btnLogout").addEventListener("click", () => {
+  panelDiv.style.display = "none";
+  loginDiv.style.display = "block";
+  document.getElementById("loginPass").value = "";
+});
+
+// ---------- Tabs ----------
+document.getElementById("tabBtnJuegos").addEventListener("click", () => {
+  document.getElementById("tabJuegos").style.display = "block";
+  document.getElementById("tabSeries").style.display = "none";
+  document.getElementById("tabBtnJuegos").classList.add("active");
+  document.getElementById("tabBtnSeries").classList.remove("active");
+});
+document.getElementById("tabBtnSeries").addEventListener("click", () => {
+  document.getElementById("tabJuegos").style.display = "none";
+  document.getElementById("tabSeries").style.display = "block";
+  document.getElementById("tabBtnSeries").classList.add("active");
+  document.getElementById("tabBtnJuegos").classList.remove("active");
+  cargarListaSeries();
+});
+
+// ---------- Helpers de filas dinámicas ----------
+function crearFilaSimple(contenedorId, valor=""){
+  const cont = document.getElementById(contenedorId);
+  const fila = document.createElement("div");
+  fila.className = "fila";
+  fila.innerHTML = `<input type="text" value="${(valor||"").replace(/"/g,'&quot;')}"><button class="btn-danger" type="button">✕</button>`;
+  fila.querySelector("button").addEventListener("click", () => fila.remove());
+  cont.appendChild(fila);
+}
+
+function crearFilaDescarga(label="", url=""){
+  const cont = document.getElementById("descargasList");
+  const fila = document.createElement("div");
+  fila.className = "fila";
+  fila.innerHTML = `
+    <input type="text" placeholder="Nombre (ej: Parte 1)" value="${(label||"").replace(/"/g,'&quot;')}" class="dLabel" style="max-width:160px;">
+    <input type="text" placeholder="URL de descarga" value="${(url||"").replace(/"/g,'&quot;')}" class="dUrl">
+    <button class="btn-danger" type="button">✕</button>`;
+  fila.querySelector("button").addEventListener("click", () => fila.remove());
+  cont.appendChild(fila);
+}
+
+document.getElementById("btnAddDescarga").addEventListener("click", () => crearFilaDescarga());
+document.getElementById("btnAddContenido").addEventListener("click", () => crearFilaSimple("contenidoList"));
+document.getElementById("btnAddRequisito").addEventListener("click", () => crearFilaSimple("requisitosList"));
+document.getElementById("btnAddInfo").addEventListener("click", () => crearFilaSimple("infoJuegoList"));
+document.getElementById("btnAddImg").addEventListener("click", () => crearFilaSimple("galeriaList"));
+
+function leerFilasSimples(contenedorId){
+  return Array.from(document.querySelectorAll(`#${contenedorId} input`)).map(i => i.value.trim()).filter(Boolean);
+}
+function leerDescargas(){
+  const filas = document.querySelectorAll("#descargasList .fila");
+  const out = [];
+  filas.forEach(f => {
+    const label = f.querySelector(".dLabel").value.trim();
+    const url = f.querySelector(".dUrl").value.trim();
+    if(url) out.push({label: label || "Descargar", url});
+  });
+  return out;
+}
+
+function slugify(str){
+  return str.toString().toLowerCase().trim()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/(^-|-$)/g,"");
+}
+
+document.getElementById("fTitulo").addEventListener("input", (e) => {
+  const slugInput = document.getElementById("fSlug");
+  if(!slugInput.readOnly) slugInput.value = slugify(e.target.value);
+});
+
+let editandoSlug = null;
+
+function limpiarFormulario(){
+  ["fTitulo","fSlug","fGrupo","fFondo","fFondoVideo","fVideoIzq","fVideoCentro","fVideoDer","fImagenIzq","fImagenCentro","fImagenDer","fPeso","fVerificacion"].forEach(id => document.getElementById(id).value = "");
+  ["fModoIzq","fModoCentro","fModoDer","fFondoModo"].forEach(id => document.getElementById(id).value = "hover");
+  document.getElementById("fSlug").readOnly = false;
+  ["descargasList","contenidoList","requisitosList","infoJuegoList","galeriaList"].forEach(id => document.getElementById(id).innerHTML = "");
+  document.getElementById("formTitulo").textContent = "Nueva página";
+  document.getElementById("btnCancelar").style.display = "none";
+  document.getElementById("secFondo").open = false;
+  document.getElementById("secVideos").open = false;
+  document.getElementById("secDescargas").open = true;
+  document.getElementById("secDetalles").open = false;
+  document.getElementById("secGaleria").open = false;
+  formMsg.textContent = "";
+  editandoSlug = null;
+}
+
+document.getElementById("btnCancelar").addEventListener("click", limpiarFormulario);
+
+document.getElementById("btnGuardar").addEventListener("click", async () => {
+  formMsg.className = "msg";
+  formMsg.textContent = "";
+
+  const titulo = document.getElementById("fTitulo").value.trim();
+  const slug = slugify(document.getElementById("fSlug").value.trim());
+
+  if(!titulo || !slug){
+    formMsg.className = "msg error";
+    formMsg.textContent = "Poné al menos un título (el slug se genera solo).";
+    return;
+  }
+
+  const data = {
+    titulo,
+    grupo: document.getElementById("fGrupo").value.trim(),
+    actualizado: Date.now(),
+    fondo: document.getElementById("fFondo").value.trim(),
+    fondoVideo: document.getElementById("fFondoVideo").value.trim(),
+    fondoModo: document.getElementById("fFondoModo").value,
+    videoIzq: document.getElementById("fVideoIzq").value.trim(),
+    imagenIzq: document.getElementById("fImagenIzq").value.trim(),
+    modoIzq: document.getElementById("fModoIzq").value,
+    videoCentro: document.getElementById("fVideoCentro").value.trim(),
+    imagenCentro: document.getElementById("fImagenCentro").value.trim(),
+    modoCentro: document.getElementById("fModoCentro").value,
+    videoDer: document.getElementById("fVideoDer").value.trim(),
+    imagenDer: document.getElementById("fImagenDer").value.trim(),
+    modoDer: document.getElementById("fModoDer").value,
+    pesoTitulo: document.getElementById("fPeso").value.trim(),
+    descargas: leerDescargas(),
+    verificacion: document.getElementById("fVerificacion").value.trim(),
+    contenido: leerFilasSimples("contenidoList"),
+    requisitos: leerFilasSimples("requisitosList"),
+    infoJuego: leerFilasSimples("infoJuegoList"),
+    galeria: leerFilasSimples("galeriaList"),
+  };
+
+  try{
+    if(!editandoSlug){
+      const existente = await get(ref(db, "paginasJuegos/" + slug));
+      if(existente.exists()){
+        formMsg.className = "msg error";
+        formMsg.textContent = "Ya existe una página con ese slug. Cambiá el título o el slug.";
+        return;
+      }
+    }
+    await set(ref(db, "paginasJuegos/" + slug), data);
+    formMsg.className = "msg ok";
+    formMsg.textContent = "¡Página guardada! Link: juego.html?slug=" + slug;
+    limpiarFormulario();
+    cargarLista();
+  }catch(err){
+    console.error(err);
+    formMsg.className = "msg error";
+    formMsg.textContent = "Error al guardar los datos.";
+  }
+});
+
+function crearItemPagina(slug, d){
+  const link = `${location.origin}${location.pathname.replace("admin.html","juego.html")}?slug=${slug}`;
+  const miniatura = d.fondo || d.imagenIzq || d.imagenCentro || d.imagenDer || (d.galeria && d.galeria[0]) || "";
+  const item = document.createElement("div");
+  item.className = "pagina-item";
+  item.innerHTML = `
+    ${miniatura ? `<img class="mini-thumb" src="${miniatura}">` : ""}
+    <div class="pagina-info">
+      <div class="titulo">${d.titulo || slug}</div>
+      <div class="link">${link}</div>
+    </div>
+    <div>
+      <a class="btn-secondary" href="${link}" target="_blank" rel="noopener">↗ Abrir página</a>
+      <button class="btn-secondary" type="button" data-accion="copiar">Copiar link</button>
+      <button class="btn-secondary" type="button" data-accion="editar">Editar</button>
+      <button class="btn-danger" type="button" data-accion="eliminar">Eliminar</button>
+    </div>`;
+  item.querySelector('[data-accion="copiar"]').addEventListener("click", () => navigator.clipboard.writeText(link));
+  item.querySelector('[data-accion="editar"]').addEventListener("click", () => cargarParaEditar(slug, d));
+  item.querySelector('[data-accion="eliminar"]').addEventListener("click", () => eliminarPagina(slug));
+  return item;
+}
+
+// Arma una fila de pestañas horizontales (identica a Juegos/Series) para separar grupos de paginas.
+// grupos: [{ label, items: [elementosDom] }]. Solo se ve el contenido del grupo que este activo.
+function renderGrupoTabs(contenedorId, grupos){
+  const cont = document.getElementById(contenedorId);
+  cont.innerHTML = "";
+  if(grupos.length === 0) return;
+
+  const tabsRow = document.createElement("div");
+  tabsRow.className = "grupo-tabs";
+  const panelesWrap = document.createElement("div");
+
+  grupos.forEach((grupo, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tab-btn" + (i === 0 ? " active" : "");
+    btn.textContent = grupo.label;
+
+    const panel = document.createElement("div");
+    panel.className = "grupo-panel" + (i === 0 ? " active" : "");
+    grupo.items.forEach(item => panel.appendChild(item));
+
+    btn.addEventListener("click", () => {
+      tabsRow.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      panelesWrap.querySelectorAll(".grupo-panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      panel.classList.add("active");
+    });
+
+    tabsRow.appendChild(btn);
+    panelesWrap.appendChild(panel);
+  });
+
+  cont.appendChild(tabsRow);
+  cont.appendChild(panelesWrap);
+}
+
+async function cargarLista(){
+  const cont = document.getElementById("listaPaginas");
+  cont.innerHTML = "Cargando...";
+  try{
+    const snap = await get(ref(db, "paginasJuegos"));
+    const data = snap.val() || {};
+    const slugs = Object.keys(data);
+    if(slugs.length === 0){
+      cont.innerHTML = "<p>No hay páginas creadas todavía.</p>";
+      document.getElementById("listaGruposJuegos").innerHTML = "";
+      return;
+    }
+    cont.innerHTML = "";
+
+    // Datalist de grupos ya usados, para autocompletar en el formulario
+    const gruposUnicos = [...new Set(slugs.map(s => (data[s].grupo || "").trim()).filter(Boolean))].sort();
+    document.getElementById("listaGruposJuegos").innerHTML = gruposUnicos.map(g => `<option value="${g}">`).join("");
+
+    // Sección de recientes: las ultimas 5 paginas guardadas/editadas
+    const ordenadosPorFecha = [...slugs].sort((a,b) => (data[b].actualizado||0) - (data[a].actualizado||0));
+    const recientes = ordenadosPorFecha.slice(0, 5).filter(s => data[s].actualizado);
+
+    // Resto agrupado por "grupo / carpeta", los sin grupo al final
+    const porGrupo = {};
+    slugs.forEach(slug => {
+      const g = (data[slug].grupo || "").trim() || "Sin grupo";
+      if(!porGrupo[g]) porGrupo[g] = [];
+      porGrupo[g].push(slug);
+    });
+    const nombresGrupos = Object.keys(porGrupo).filter(g => g !== "Sin grupo").sort();
+    if(porGrupo["Sin grupo"]) nombresGrupos.push("Sin grupo");
+
+    const grupos = [];
+    if(recientes.length){
+      grupos.push({ label: "🕓 Recientes", items: recientes.map(slug => crearItemPagina(slug, data[slug])) });
+    }
+    nombresGrupos.forEach(nombre => {
+      grupos.push({
+        label: nombre === "Sin grupo" ? "📄 Sin grupo" : "📁 " + nombre,
+        items: porGrupo[nombre].map(slug => crearItemPagina(slug, data[slug]))
+      });
+    });
+    renderGrupoTabs("listaPaginas", grupos);
+  }catch(err){
+    console.error(err);
+    cont.innerHTML = "<p>Error al cargar las páginas.</p>";
+  }
+}
+
+function cargarParaEditar(slug, d){
+  editandoSlug = slug;
+  document.getElementById("formTitulo").textContent = "Editando: " + (d.titulo || slug);
+  document.getElementById("fTitulo").value = d.titulo || "";
+  document.getElementById("fSlug").value = slug;
+  document.getElementById("fSlug").readOnly = true;
+  document.getElementById("fGrupo").value = d.grupo || "";
+  document.getElementById("fFondo").value = d.fondo || "";
+  document.getElementById("fFondoVideo").value = d.fondoVideo || "";
+  document.getElementById("fFondoModo").value = d.fondoModo || "hover";
+  document.getElementById("fVideoIzq").value = d.videoIzq || "";
+  document.getElementById("fImagenIzq").value = d.imagenIzq || "";
+  document.getElementById("fModoIzq").value = d.modoIzq || "hover";
+  document.getElementById("fVideoCentro").value = d.videoCentro || "";
+  document.getElementById("fImagenCentro").value = d.imagenCentro || "";
+  document.getElementById("fModoCentro").value = d.modoCentro || "hover";
+  document.getElementById("fVideoDer").value = d.videoDer || "";
+  document.getElementById("fImagenDer").value = d.imagenDer || "";
+  document.getElementById("fModoDer").value = d.modoDer || "hover";
+  document.getElementById("fPeso").value = d.pesoTitulo || "";
+  document.getElementById("fVerificacion").value = d.verificacion || "";
+
+  document.getElementById("descargasList").innerHTML = "";
+  (d.descargas || []).forEach(desc => crearFilaDescarga(desc.label, desc.url));
+
+  document.getElementById("contenidoList").innerHTML = "";
+  (d.contenido || []).forEach(v => crearFilaSimple("contenidoList", v));
+
+  document.getElementById("requisitosList").innerHTML = "";
+  (d.requisitos || []).forEach(v => crearFilaSimple("requisitosList", v));
+
+  document.getElementById("infoJuegoList").innerHTML = "";
+  (d.infoJuego || []).forEach(v => crearFilaSimple("infoJuegoList", v));
+
+  document.getElementById("galeriaList").innerHTML = "";
+  (d.galeria || []).forEach(v => crearFilaSimple("galeriaList", v));
+
+  document.getElementById("secFondo").open = !!(d.fondo || d.fondoVideo);
+  document.getElementById("secVideos").open = !!(d.videoIzq || d.videoCentro || d.videoDer || d.imagenIzq || d.imagenCentro || d.imagenDer);
+  document.getElementById("secDescargas").open = true;
+  document.getElementById("secDetalles").open = !!(d.verificacion || (d.contenido||[]).length || (d.requisitos||[]).length || (d.infoJuego||[]).length);
+  document.getElementById("secGaleria").open = !!(d.galeria||[]).length;
+
+  document.getElementById("btnCancelar").style.display = "inline-block";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+async function eliminarPagina(slug){
+  if(!confirm("¿Seguro que querés eliminar esta página? No se puede deshacer.")) return;
+  try{
+    await remove(ref(db, "paginasJuegos/" + slug));
+    cargarLista();
+  }catch(err){
+    console.error(err);
+    alert("Error al eliminar la página.");
+  }
+}
+
+// ================= SERIES / CAPÍTULOS =================
+
+document.getElementById("sTitulo").addEventListener("input", (e) => {
+  const slugInput = document.getElementById("sSlug");
+  if(!slugInput.readOnly) slugInput.value = slugify(e.target.value);
+});
+
+// Detecta si el link pegado es de YouTube, Google Drive o un video directo (.mp4/.webm/etc) y saca el ID/URL limpio
+function parseVideoInput(valor){
+  valor = (valor || "").trim();
+  if(/youtu\.be|youtube\.com/i.test(valor)){
+    const watchMatch = valor.match(/[?&]v=([^&]+)/);
+    const shortMatch = valor.match(/youtu\.be\/([^?&]+)/);
+    const embedMatch = valor.match(/embed\/([^?&]+)/);
+    let id = "";
+    if(watchMatch) id = watchMatch[1];
+    else if(shortMatch) id = shortMatch[1];
+    else if(embedMatch) id = embedMatch[1];
+    else id = valor;
+    return { tipo: "youtube", id };
+  }
+  if(/drive\.google\.com/i.test(valor)){
+    const m = valor.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return { tipo: "drive", id: m ? m[1] : valor };
+  }
+  // Link directo a un archivo de video (trailers de Steam, mp4/webm propios, etc.)
+  if(/^https?:\/\//i.test(valor) && /\.(mp4|webm|ogg|ogv|mov|m3u8)(\?.*)?$/i.test(valor)){
+    return { tipo: "archivo", id: valor };
+  }
+  // Sin dominio reconocido: si parece un ID de YouTube (11 caracteres), lo tratamos como tal
+  if(/^[a-zA-Z0-9_-]{11}$/.test(valor)) return { tipo: "youtube", id: valor };
+  // Si no, asumimos que es directamente un ID de Drive
+  return { tipo: "drive", id: valor };
+}
+
+function crearFilaCapitulo(label="", valor=""){
+  const cont = document.getElementById("capitulosList");
+  const fila = document.createElement("div");
+  fila.className = "fila";
+  fila.innerHTML = `
+    <input type="text" placeholder="Nombre (ej: Capítulo 1)" value="${(label||"").replace(/"/g,'&quot;')}" class="cLabel" style="max-width:160px;">
+    <input type="text" placeholder="Link de YouTube o de Drive" value="${(valor||"").replace(/"/g,'&quot;')}" class="cValor">
+    <button class="btn-danger" type="button">✕</button>`;
+  fila.querySelector("button").addEventListener("click", () => fila.remove());
+  cont.appendChild(fila);
+}
+
+document.getElementById("btnAddCapitulo").addEventListener("click", () => crearFilaCapitulo());
+
+function leerCapitulos(){
+  const filas = document.querySelectorAll("#capitulosList .fila");
+  const out = [];
+  filas.forEach(f => {
+    const label = f.querySelector(".cLabel").value.trim();
+    const valor = f.querySelector(".cValor").value.trim();
+    if(valor){
+      const { tipo, id } = parseVideoInput(valor);
+      out.push({ label: label || "Capítulo", tipo, id });
+    }
+  });
+  return out;
+}
+
+let editandoSlugSerie = null;
+const formMsgSerie = document.getElementById("formMsgSerie");
+
+function limpiarFormularioSerie(){
+  document.getElementById("sTitulo").value = "";
+  document.getElementById("sSlug").value = "";
+  document.getElementById("sSlug").readOnly = false;
+  document.getElementById("sGrupo").value = "";
+  document.getElementById("sTipoContenido").value = "serie";
+  document.getElementById("sPoster").value = "";
+  document.getElementById("sFondo").value = "";
+  document.getElementById("sAnio").value = "";
+  document.getElementById("sGenero").value = "";
+  document.getElementById("sSinopsis").value = "";
+  document.getElementById("capitulosList").innerHTML = "";
+  document.getElementById("formTituloSerie").textContent = "Nueva serie";
+  document.getElementById("btnCancelarSerie").style.display = "none";
+  document.getElementById("secFicha").open = false;
+  document.getElementById("secCapitulos").open = true;
+  formMsgSerie.textContent = "";
+  editandoSlugSerie = null;
+}
+
+document.getElementById("btnCancelarSerie").addEventListener("click", limpiarFormularioSerie);
+
+document.getElementById("btnGuardarSerie").addEventListener("click", async () => {
+  formMsgSerie.className = "msg";
+  formMsgSerie.textContent = "";
+
+  const titulo = document.getElementById("sTitulo").value.trim();
+  const slug = slugify(document.getElementById("sSlug").value.trim());
+  const capitulos = leerCapitulos();
+
+  if(!titulo || !slug){
+    formMsgSerie.className = "msg error";
+    formMsgSerie.textContent = "Poné al menos un título (el slug se genera solo).";
+    return;
+  }
+  if(capitulos.length === 0){
+    formMsgSerie.className = "msg error";
+    formMsgSerie.textContent = "Agregá al menos un capítulo con su link.";
+    return;
+  }
+
+  try{
+    if(!editandoSlugSerie){
+      const existente = await get(ref(db, "paginasSeries/" + slug));
+      if(existente.exists()){
+        formMsgSerie.className = "msg error";
+        formMsgSerie.textContent = "Ya existe una serie con ese slug. Cambiá el título o el slug.";
+        return;
+      }
+    }
+    await set(ref(db, "paginasSeries/" + slug), {
+      titulo,
+      grupo: document.getElementById("sGrupo").value.trim(),
+      actualizado: Date.now(),
+      tipo: document.getElementById("sTipoContenido").value,
+      poster: document.getElementById("sPoster").value.trim(),
+      fondo: document.getElementById("sFondo").value.trim(),
+      anio: document.getElementById("sAnio").value.trim(),
+      genero: document.getElementById("sGenero").value.trim(),
+      sinopsis: document.getElementById("sSinopsis").value.trim(),
+      capitulos
+    });
+    formMsgSerie.className = "msg ok";
+    formMsgSerie.textContent = "¡Serie guardada! Link: serie.html?slug=" + slug;
+    limpiarFormularioSerie();
+    cargarListaSeries();
+  }catch(err){
+    console.error(err);
+    formMsgSerie.className = "msg error";
+    formMsgSerie.textContent = "Error al guardar los datos.";
+  }
+});
+
+function crearItemSerie(slug, s){
+  const link = `${location.origin}${location.pathname.replace("admin.html","serie.html")}?slug=${slug}`;
+  const miniatura = s.poster || s.fondo || "";
+  const item = document.createElement("div");
+  item.className = "pagina-item";
+  item.innerHTML = `
+    ${miniatura ? `<img class="mini-thumb" src="${miniatura}">` : ""}
+    <div class="pagina-info">
+      <div class="titulo">${s.titulo || slug} <small style="display:inline;">(${(s.capitulos||[]).length} capítulos)</small></div>
+      <div class="link">${link}</div>
+    </div>
+    <div>
+      <a class="btn-secondary" href="${link}" target="_blank" rel="noopener">↗ Abrir página</a>
+      <button class="btn-secondary" type="button" data-accion="copiar">Copiar link</button>
+      <button class="btn-secondary" type="button" data-accion="editar">Editar</button>
+      <button class="btn-danger" type="button" data-accion="eliminar">Eliminar</button>
+    </div>`;
+  item.querySelector('[data-accion="copiar"]').addEventListener("click", () => navigator.clipboard.writeText(link));
+  item.querySelector('[data-accion="editar"]').addEventListener("click", () => cargarSerieParaEditar(slug, s));
+  item.querySelector('[data-accion="eliminar"]').addEventListener("click", () => eliminarSerie(slug));
+  return item;
+}
+
+async function cargarListaSeries(){
+  const cont = document.getElementById("listaSeries");
+  cont.innerHTML = "Cargando...";
+  try{
+    const snap = await get(ref(db, "paginasSeries"));
+    const data = snap.val() || {};
+    const slugs = Object.keys(data);
+    if(slugs.length === 0){
+      cont.innerHTML = "<p>No hay series creadas todavía.</p>";
+      document.getElementById("listaGruposSeries").innerHTML = "";
+      return;
+    }
+    cont.innerHTML = "";
+
+    const gruposUnicos = [...new Set(slugs.map(s => (data[s].grupo || "").trim()).filter(Boolean))].sort();
+    document.getElementById("listaGruposSeries").innerHTML = gruposUnicos.map(g => `<option value="${g}">`).join("");
+
+    const ordenadosPorFecha = [...slugs].sort((a,b) => (data[b].actualizado||0) - (data[a].actualizado||0));
+    const recientes = ordenadosPorFecha.slice(0, 5).filter(s => data[s].actualizado);
+
+    const porGrupo = {};
+    slugs.forEach(slug => {
+      const g = (data[slug].grupo || "").trim() || "Sin grupo";
+      if(!porGrupo[g]) porGrupo[g] = [];
+      porGrupo[g].push(slug);
+    });
+    const nombresGrupos = Object.keys(porGrupo).filter(g => g !== "Sin grupo").sort();
+    if(porGrupo["Sin grupo"]) nombresGrupos.push("Sin grupo");
+
+    const grupos = [];
+    if(recientes.length){
+      grupos.push({ label: "🕓 Recientes", items: recientes.map(slug => crearItemSerie(slug, data[slug])) });
+    }
+    nombresGrupos.forEach(nombre => {
+      grupos.push({
+        label: nombre === "Sin grupo" ? "📄 Sin grupo" : "📁 " + nombre,
+        items: porGrupo[nombre].map(slug => crearItemSerie(slug, data[slug]))
+      });
+    });
+    renderGrupoTabs("listaSeries", grupos);
+  }catch(err){
+    console.error(err);
+    cont.innerHTML = "<p>Error al cargar las series.</p>";
+  }
+}
+
+function cargarSerieParaEditar(slug, s){
+  editandoSlugSerie = slug;
+  document.getElementById("formTituloSerie").textContent = "Editando: " + (s.titulo || slug);
+  document.getElementById("sTitulo").value = s.titulo || "";
+  document.getElementById("sSlug").value = slug;
+  document.getElementById("sSlug").readOnly = true;
+  document.getElementById("sGrupo").value = s.grupo || "";
+  document.getElementById("sTipoContenido").value = s.tipo || "serie";
+  document.getElementById("sPoster").value = s.poster || "";
+  document.getElementById("sFondo").value = s.fondo || "";
+  document.getElementById("sAnio").value = s.anio || "";
+  document.getElementById("sGenero").value = s.genero || "";
+  document.getElementById("sSinopsis").value = s.sinopsis || "";
+
+  document.getElementById("capitulosList").innerHTML = "";
+  (s.capitulos || []).forEach(cap => {
+    // Reconstruimos un link "de referencia" para mostrarlo en el input al editar
+    let valorMostrado;
+    if(cap.tipo === "youtube") valorMostrado = `https://youtu.be/${cap.id}`;
+    else if(cap.tipo === "archivo") valorMostrado = cap.id;
+    else valorMostrado = `https://drive.google.com/file/d/${cap.id}/view`;
+    crearFilaCapitulo(cap.label, valorMostrado);
+  });
+
+  document.getElementById("secFicha").open = !!(s.poster || s.fondo || s.anio || s.genero || s.sinopsis);
+  document.getElementById("secCapitulos").open = true;
+
+  document.getElementById("btnCancelarSerie").style.display = "inline-block";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+async function eliminarSerie(slug){
+  if(!confirm("¿Seguro que querés eliminar esta serie? No se puede deshacer.")) return;
+  try{
+    await remove(ref(db, "paginasSeries/" + slug));
+    cargarListaSeries();
+  }catch(err){
+    console.error(err);
+    alert("Error al eliminar la serie.");
+  }
+}
+</script>
+</body>
+</html>

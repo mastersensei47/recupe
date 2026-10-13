@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS47</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0a0b;
+  --card:#151517;
+  --card2:#1b1b1e;
+  --line:#262629;
+  --accent:#ff2b3d;
+  --accent2:#00e5c7;
+  --text:#f2f2f2;
+  --muted:#9a9aa0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',Arial,sans-serif;}
+h1,h2{font-family:'Poppins',Arial,sans-serif;}
+
+/* ---------- NAV ---------- */
+.navbar{width:100%;background:rgba(10,10,11,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:fixed;top:0;left:0;z-index:1000;border-bottom:1px solid var(--line);}
+.nav-container{max-width:1400px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;}
+.logo{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px;text-shadow:0 0 14px rgba(255,43,61,0.6);text-decoration:none;}
+.nav-links{display:flex;gap:10px;align-items:center;}
+.nav-links a{color:#dcdce0;text-decoration:none;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:20px;transition:0.25s;border:1px solid transparent;}
+.nav-links a:hover{border-color:var(--accent);color:#fff;}
+.btn-mas-juegos{background:var(--card2);border:1px solid var(--line) !important;}
+
+/* ---------- LAYOUT ---------- */
+main{margin-top:90px;padding:0 20px 60px;max-width:1300px;margin-left:auto;margin-right:auto;}
+main.fade-in{animation:fadeIn 0.5s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:linear-gradient(160deg,#17171a,#0c0c0d);background-size:cover;background-position:center;min-height:340px;padding:44px 36px;border-radius:18px;margin-bottom:34px;border:1px solid var(--line);overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 100%);pointer-events:none;}
+.hero.con-fondo::before{background:linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(6,6,7,0.92) 100%);}
+.hero > *{position:relative;z-index:2;}
+.hero > .hero-fondo{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.hero-fondo-img{position:absolute;inset:0;background-size:cover;background-position:center;}
+.hero-fondo-video{position:absolute;inset:0;opacity:0;transition:opacity 0.6s ease;}
+.hero-fondo-video.siempre{opacity:1;}
+.hero-fondo-video iframe,.hero-fondo-video video{width:100%;height:100%;object-fit:cover;border:none;}
+.hero.fondo-modo-hover:hover .hero-fondo-video{opacity:1;}
+.hero.fondo-modo-rotativo.fondo-mostrando-video .hero-fondo-video{opacity:1;}
+.video{flex:1;min-width:280px;}
+.video iframe,.video video,.video .media-slot,.video img{width:100%;height:250px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.55);border:1px solid var(--line);background:#000;object-fit:cover;}
+.titulo{flex:1.2;text-align:center;min-width:260px;}
+.titulo h1{font-size:32px;font-weight:800;margin-top:12px;margin-bottom:4px;text-shadow:0 2px 12px rgba(0,0,0,0.8);letter-spacing:0.3px;}
+.titulo .barra{width:60px;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;margin:14px auto 0;}
+.video-centro{margin-bottom:16px;display:flex;justify-content:center;}
+.video-centro iframe,.video-centro video,.video-centro .media-slot,.video-centro img{width:100%;max-width:400px;height:220px;border-radius:16px;box-shadow:0 0 30px rgba(255,43,61,0.35);border:1px solid var(--line);background:#000;object-fit:cover;}
+
+/* ---------- MEDIA SLOT (imagen + video: hover / rotativo) ---------- */
+.media-slot{position:relative;overflow:hidden;}
+.media-slot .capa-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:opacity 0.5s ease;}
+.media-slot .capa-video{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity 0.5s ease;pointer-events:none;}
+.media-slot .capa-video iframe,.media-slot .capa-video video{width:100%;height:100%;object-fit:cover;border:none;background:#000;}
+.media-slot.modo-hover:hover .capa-video{opacity:1;}
+.media-slot.modo-rotativo.mostrando-video .capa-video{opacity:1;}
+.media-slot .capa-video-simple{position:relative;z-index:1;width:100%;height:100%;}
+.media-slot .capa-video-simple iframe,.media-slot .capa-video-simple video{width:100%;height:100%;border:none;background:#000;}
+
+/* ---------- DESCARGAS ---------- */
+.bloque-titulo{display:flex;align-items:center;gap:10px;margin:8px 0 16px;}
+.bloque-titulo h2{font-size:17px;color:#fff;font-weight:700;}
+.bloque-titulo .linea{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent);}
+
+.partes-grid{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 34px 0;}
+.partes-grid a{position:relative;background:var(--card2);padding:13px 22px;border-radius:10px;text-decoration:none;color:white;font-weight:600;font-size:14px;border:1px solid var(--line);transition:0.25s;display:flex;align-items:center;gap:8px;}
+.partes-grid a::before{content:"⬇";font-size:13px;opacity:0.8;}
+.partes-grid a:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,43,61,0.35);}
+
+/* ---------- ACORDEON ---------- */
+.acordeon{background:var(--card);border-radius:12px;margin-bottom:14px;border:1px solid var(--line);overflow:hidden;}
+.acordeon-header{padding:16px 18px;cursor:pointer;font-weight:700;font-size:15px;background:var(--card2);display:flex;justify-content:space-between;align-items:center;transition:0.2s;user-select:none;}
+.acordeon-header:hover{background:#232326;}
+.acordeon-header span{transition:transform 0.3s;color:var(--muted);}
+.acordeon-header.active span{transform:rotate(180deg);color:var(--accent2);}
+.acordeon-content{max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+.acordeon-content ul{list-style:none;padding:16px;}
+.acordeon-content ul li{background:var(--card2);margin-bottom:7px;padding:10px 12px;border-radius:8px;font-size:14px;border-left:3px solid var(--accent2);}
+.acordeon-content iframe{display:block;}
+.verif-media{width:100%;height:450px;border:none;background:#000;display:block;}
+
+/* ---------- DETALLES ---------- */
+.seccion-detalles{background:var(--card);padding:26px;border-radius:16px;margin-top:26px;border:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+.seccion-detalles .col{min-width:0;}
+.seccion-detalles h2{font-size:16px;font-weight:700;border-left:3px solid var(--accent2);padding-left:10px;margin-bottom:12px;}
+.info-lista{list-style:none;padding:0;}
+.info-lista li{padding:10px 12px;margin-bottom:8px;background:var(--card2);border-radius:8px;font-size:14px;color:#e5e5e8;}
+@media(max-width:800px){.seccion-detalles{grid-template-columns:1fr;}}
+
+/* ---------- GALERIA ---------- */
+.titulo-galeria{margin-top:36px;}
+.galeria-capturas{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px,1fr));gap:16px;margin-top:16px;}
+.galeria-capturas img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:zoom-in;transition:0.25s;}
+.galeria-capturas img:hover{transform:scale(1.03);border-color:var(--accent);box-shadow:0 10px 25px rgba(0,0,0,0.5);}
+
+/* ---------- LIGHTBOX ---------- */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:5000;cursor:zoom-out;padding:30px;}
+#lightbox.abierto{display:flex;}
+#lightbox img{max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 0 40px rgba(0,0,0,0.7);}
+
+/* ---------- ESTADOS ---------- */
+.estado-box{text-align:center;margin-top:140px;color:var(--muted);font-size:16px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:girar 0.8s linear infinite;}
+@keyframes girar{to{transform:rotate(360deg);}}
+.estado-icono{font-size:34px;}
+
+@media(max-width:1000px){.hero{flex-direction:column;padding:26px;text-align:center;}}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">MS47</a>
+    <div class="nav-links">
+      <a href="index.html" class="btn-mas-juegos">🎮 <span>Más Juegos</span></a>
+      <a href="https://www.youtube.com/@master-sensei47" target="_blank">🎬 <span>YouTube</span></a>
+      <a href="https://www.instagram.com/master__sensei47" target="_blank">📸 <span>Instagram</span></a>
+      <a href="https://www.tiktok.com/@mastersensei47" target="_blank">📱 <span>TikTok</span></a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div class="estado-box" id="estado">
+    <div class="spinner"></div>
+    <p>Cargando página...</p>
+  </div>
+</main>
+
+<div id="lightbox" onclick="this.classList.remove('abierto')">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
+    authDomain: "tv-fulvo.firebaseapp.com",
+    projectId: "tv-fulvo",
+    storageBucket: "tv-fulvo.firebasestorage.app",
+    messagingSenderId: "733955226142",
+    appId: "1:733955226142:web:d49871efff59452b604c0f",
+    databaseURL: "https://tv-fulvo-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function toEmbedUrl(url){
+  if(!url) return "";
+  url = url.trim();
+  const watchMatch = url.match(/[?&]v=([^&]+)/);
+  const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+  const embedMatch = url.match(/embed\/([^?&]+)/);
+  let id = "";
+  if(watchMatch) id = watchMatch[1];
+  else if(shortMatch) id = shortMatch[1];
+  else if(embedMatch) id = embedMatch[1];
+  else id = url;
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+function detectarTipoVideo(url){
+  if(!url) return null;
+  url = url.trim();
+  if(/youtu\.be|youtube\.com/i.test(url)) return "youtube";
+  if(/drive\.google\.com/i.test(url)) return "drive";
+  if(/\.(mp4|webm|ogg|ogv|mov|m3u8)(\?.*)?$/i.test(url)) return "archivo";
+  return "youtube";
+}
+
+function extraerDriveId(url){
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : url;
+}
+
+// Arma el <video> o <iframe> segun sea un link de YouTube, Drive, o un archivo directo (.mp4/.webm/etc)
+function renderVideo(url, claseExtra=""){
+  const tipo = detectarTipoVideo(url);
+  if(!tipo) return "";
+  if(tipo === "archivo"){
+    return `<video class="${claseExtra}" src="${url}" controls playsinline></video>`;
+  }
+  if(tipo === "drive"){
+    return `<iframe class="${claseExtra}" src="https://drive.google.com/file/d/${extraerDriveId(url)}/preview" allowfullscreen></iframe>`;
+  }
+  return `<iframe class="${claseExtra}" src="${toEmbedUrl(url)}" allowfullscreen></iframe>`;
+}
+
+// Igual que renderVideo pero sin controles, pensado para fondos/hover (autoplay, mute, loop)
+function renderVideoTag(url, autoplayLoop){
+  const tipo = detectarTipoVideo(url);
+  if(tipo === "archivo"){
+    return `<video muted loop playsinline ${autoplayLoop ? "autoplay" : ""} src="${url}"></video>`;
+  }
+  if(tipo === "drive"){
+    return `<iframe src="https://drive.google.com/file/d/${extraerDriveId(url)}/preview" allow="autoplay"></iframe>`;
+  }
+  const embed = toEmbedUrl(url);
+  const id = embed.split("/embed/")[1];
+  return `<iframe src="https://www.youtube.com/embed/${id}?autoplay=${autoplayLoop?1:0}&mute=1&controls=0&loop=1&playlist=${id}&rel=0" allow="autoplay"></iframe>`;
+}
+
+// Arma el contenido de un video del hero (izq/centro/der), con soporte de imagen + modo hover/rotativo
+function renderMediaSlot(video, imagen, modo){
+  if(!video && !imagen) return "";
+  if(!video){
+    return `<img src="${imagen}">`;
+  }
+  if(!imagen || modo === "video"){
+    // Video suelto: se comporta como un embed normal, no se reproduce solo
+    return renderVideo(video);
+  }
+  const modoClase = modo === "rotativo" ? "modo-rotativo" : "modo-hover";
+  return `
+    <div class="media-slot ${modoClase}">
+      <img class="capa-img" src="${imagen}">
+      <div class="capa-video">${renderVideoTag(video, true)}</div>
+    </div>`;
+}
+
+// Arma el fondo grande del hero, con soporte de imagen + video + modo hover/rotativo
+function armarFondoHero(fondoImg, fondoVideo, fondoModo){
+  if(!fondoImg && !fondoVideo) return { html: "", clase: "" };
+
+  let capasHtml = "";
+  let clase = "con-fondo";
+
+  if(fondoImg){
+    capasHtml += `<div class="hero-fondo-img" style="background-image:url('${fondoImg}')"></div>`;
+  }
+  if(fondoVideo){
+    const siempre = !fondoImg ? " siempre" : "";
+    capasHtml += `<div class="hero-fondo-video${siempre}">${renderVideoTag(fondoVideo, true)}</div>`;
+    if(fondoImg){
+      clase += fondoModo === "rotativo" ? " fondo-modo-rotativo" : " fondo-modo-hover";
+    }
+  }
+
+  return { html: `<div class="hero-fondo">${capasHtml}</div>`, clase };
+}
+
+// Activa el cambio automatico de los slots en modo "rotativo" (video izq/centro/der y fondo)
+function inicializarRotativos(){
+  document.querySelectorAll(".media-slot.modo-rotativo").forEach(el => {
+    setInterval(() => el.classList.toggle("mostrando-video"), 6000);
+  });
+  const heroSection = document.getElementById("heroSection");
+  if(heroSection && heroSection.classList.contains("fondo-modo-rotativo")){
+    setInterval(() => heroSection.classList.toggle("fondo-mostrando-video"), 6000);
+  }
+}
+
+function esc(str){
+  const div = document.createElement("div");
+  div.innerText = str || "";
+  return div.innerHTML;
+}
+
+function listaHtml(items){
+  return `<ul>${(items||[]).filter(Boolean).map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+}
+
+window.toggleAcordeon = function(el){
+  const content = el.nextElementSibling;
+  el.classList.toggle("active");
+  content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+};
+
+window.abrirLightbox = function(src){
+  document.getElementById("lightbox-img").src = src;
+  document.getElementById("lightbox").classList.add("abierto");
+};
+
+async function cargarPagina(){
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
+  const main = document.getElementById("main");
+
+  if(!slug){
+    main.innerHTML = `<div class="estado-box"><div class="estado-icono">🔗</div><p>No se especificó ninguna página (falta ?slug= en el link).</p></div>`;
+    return;
+  }
+
+  try{
+    const snap = await get(ref(db, "paginasJuegos/" + slug));
+    if(!snap.exists()){
+      main.innerHTML = `<div class="estado-box"><div class="estado-icono">🕹️</div><p>Esta página no existe o fue eliminada.</p></div>`;
+      return;
+    }
+
+    const d = snap.val();
+    document.title = `${d.titulo || "MS47"} - MS47`;
+
+    const fondoInfo = armarFondoHero(d.fondo, d.fondoVideo, d.fondoModo);
+    const heroClass = `hero ${fondoInfo.clase}`.trim();
+
+    let heroHtml = `<section class="${heroClass}" id="heroSection">`;
+    heroHtml += fondoInfo.html;
+    heroHtml += (d.videoIzq || d.imagenIzq) ? `<div class="video">${renderMediaSlot(d.videoIzq, d.imagenIzq, d.modoIzq)}</div>` : "";
+    heroHtml += `<div class="titulo">`;
+    heroHtml += (d.videoCentro || d.imagenCentro) ? `<div class="video-centro">${renderMediaSlot(d.videoCentro, d.imagenCentro, d.modoCentro)}</div>` : "";
+    heroHtml += `<h1>${esc(d.titulo)}</h1><div class="barra"></div></div>`;
+    heroHtml += (d.videoDer || d.imagenDer) ? `<div class="video">${renderMediaSlot(d.videoDer, d.imagenDer, d.modoDer)}</div>` : "";
+    heroHtml += `</section>`;
+
+    const descargas = (d.descargas || []).filter(x => x && x.url);
+    let descargasHtml = "";
+    if(descargas.length){
+      descargasHtml = `<div class="bloque-titulo"><h2>${esc(d.pesoTitulo || "Descargas")}</h2><div class="linea"></div></div><section class="partes-grid">`;
+      descargas.forEach(p => descargasHtml += `<a href="${p.url}" target="_blank">${esc(p.label || "Descargar")}</a>`);
+      descargasHtml += `</section>`;
+    }
+
+    let verificacionHtml = "";
+    if(d.verificacion){
+      verificacionHtml = `
+        <div class="acordeon">
+          <div class="acordeon-header" onclick="toggleAcordeon(this)">🎞️ Verificación <span>▼</span></div>
+          <div class="acordeon-content">${renderVideo(d.verificacion, "verif-media")}</div>
+        </div>`;
+    }
+
+    let contenidoHtml = "";
+    if((d.contenido||[]).filter(Boolean).length){
+      contenidoHtml = `
+        <div class="acordeon">
+          <div class="acordeon-header" onclick="toggleAcordeon(this)">🔥 Contenido / DLCs <span>▼</span></div>
+          <div class="acordeon-content">${listaHtml(d.contenido)}</div>
+        </div>`;
+    }
+
+    let detallesHtml = "";
+    const tieneReq = (d.requisitos||[]).filter(Boolean).length;
+    const tieneInfo = (d.infoJuego||[]).filter(Boolean).length;
+    if(tieneReq || tieneInfo){
+      detallesHtml = `<div class="seccion-detalles">`;
+      detallesHtml += tieneReq ? `<div class="col"><h2>🖥️ Requisitos del sistema</h2><ul class="info-lista">${(d.requisitos||[]).filter(Boolean).map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>` : "";
+      detallesHtml += tieneInfo ? `<div class="col"><h2>🎮 Información del juego</h2><ul class="info-lista">${(d.infoJuego||[]).filter(Boolean).map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>` : "";
+      detallesHtml += `</div>`;
+    }
+
+    const galeria = (d.galeria || []).filter(Boolean);
+    let galeriaHtml = "";
+    if(galeria.length){
+      galeriaHtml = `<div class="bloque-titulo titulo-galeria"><h2>📸 Capturas del juego</h2><div class="linea"></div></div><div class="galeria-capturas">`;
+      galeria.forEach(src => galeriaHtml += `<img src="${src}" onclick="abrirLightbox('${src}')" loading="lazy">`);
+      galeriaHtml += `</div>`;
+    }
+
+    main.innerHTML = heroHtml + descargasHtml + verificacionHtml + contenidoHtml + detallesHtml + galeriaHtml;
+    main.classList.add("fade-in");
+    inicializarRotativos();
+  }catch(err){
+    console.error(err);
+    main.innerHTML = `<div class="estado-box"><div class="estado-icono">⚠️</div><p>Ocurrió un error al cargar la página.</p></div>`;
+  }
+}
+
+cargarPagina();
+</script>
+
+</body>
+</html>

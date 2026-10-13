@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Importar juegos - MS47</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+body{background:#0e0e0e;color:white;padding:20px;}
+h1{margin-bottom:20px;}
+.card{background:#1b1b1b;border-radius:10px;padding:20px;max-width:750px;margin:0 auto 20px;border:1px solid #333;}
+input[type=password]{width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#111;color:white;font-size:14px;}
+button{cursor:pointer;border:none;border-radius:6px;padding:12px 20px;font-weight:bold;margin-top:10px;margin-right:8px;font-size:15px;}
+.btn-primary{background:#ff0000;color:white;}
+.btn-primary:hover{background:#c70000;}
+.btn-primary:disabled{background:#552222;cursor:not-allowed;}
+#panel{display:none;max-width:750px;margin:0 auto;}
+#login{max-width:350px;margin:100px auto;text-align:center;}
+.item{background:#1a1a1a;border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:14px;display:flex;justify-content:space-between;}
+.ok{color:#6bff8f;}
+.err{color:#ff6b6b;}
+.pending{color:#888;}
+.msg{margin-top:10px;font-size:14px;}
+.msg.error{color:#ff6b6b;}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>🔒 Importar juegos</h1>
+  <div class="card">
+    <label>Clave de acceso</label><br><br>
+    <input type="password" id="loginPass" placeholder="Ingresá la clave">
+    <button class="btn-primary" id="btnLogin" style="width:100%;">Entrar</button>
+    <p class="msg error" id="loginMsg"></p>
+  </div>
+</div>
+
+<div id="panel">
+  <h1>Importar 14 juegos a Firebase</h1>
+  <div class="card">
+    <p>Esto va a crear (o sobreescribir si ya existen) estas páginas en <code>paginasJuegos</code>. Después de importar vas a poder editarlas o borrarlas desde <b>admin.html</b> como cualquier otra.</p>
+    <button class="btn-primary" id="btnImportar">Importar todo</button>
+    <div id="lista" style="margin-top:15px;"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
+    authDomain: "tv-fulvo.firebaseapp.com",
+    projectId: "tv-fulvo",
+    storageBucket: "tv-fulvo.firebasestorage.app",
+    messagingSenderId: "733955226142",
+    appId: "1:733955226142:web:d49871efff59452b604c0f",
+    databaseURL: "https://tv-fulvo-default-rtdb.firebaseio.com"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const CLAVE_ADMIN = "ms47admin";
+
+document.getElementById("btnLogin").addEventListener("click", () => {
+  const pass = document.getElementById("loginPass").value;
+  if(pass === CLAVE_ADMIN){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    pintarLista();
+  }else{
+    document.getElementById("loginMsg").textContent = "Clave incorrecta.";
+  }
+});
+
+function d(label, url){ return {label, url}; }
+
+const juegos = [
+{
+  slug: "rdr2", titulo: "Red Dead Redemption 2",
+  videoIzq: "https://www.youtube.com/embed/RXFOzlO6HY4",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/wmozuemP_-I",
+  pesoTitulo: "DESCARGAR (300GB TEMPORALES)",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/4vdkto1x2a37qdj/Red+Dead+Redemption+2.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/q08olsfi8nsnew7/Red_Dead_Redemption_2.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/pgy1p5ebktzv66u/Red+Dead+Redemption+2.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/j755061t9mon5ht/Red+Dead+Redemption+2.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/jqgn4ejtpqmfsyj/Red+Dead+Redemption+2.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/lnwe4c7wv72odxb/Red_Dead_Redemption_2.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/2xhykyp092j5mlr/Red+Dead+Redemption+2.7z.007/file"),
+    d("Parte 8","https://www.mediafire.com/file/62b9ey0s68blful/Red+Dead+Redemption+2.7z.008/file"),
+    d("Parte 9","https://www.mediafire.com/file/zq5vz7w0qbjhk2o/Red+Dead+Redemption+2.7z.009/file"),
+    d("Parte 10","https://www.mediafire.com/file/9yy2wl6x135dfwf/Red+Dead+Redemption+2.7z.010/file"),
+    d("Parte 11","https://www.mediafire.com/file/n001yg0hkcsmm0w/Red+Dead+Redemption+2.7z.011/file"),
+    d("Parte 12","https://www.mediafire.com/file/y8ka8n4beim5o8o/Red+Dead+Redemption+2.7z.012/file"),
+    d("Parte 13","https://www.mediafire.com/file/iwosyjy20kpnh1d/Red+Dead+Redemption+2.7z.013/file"),
+    d("Parte 14","https://www.mediafire.com/file/acerh54fnj47hgc/Red+Dead+Redemption+2.7z.014/file"),
+  ],
+  verificacion: "https://drive.google.com/file/d/1Cfa1dGUL_BaMdUBJIz5MQ9v3Prdpoj9m/preview",
+  contenido: ["Red Dead Redemption 2","(Build 1491.50 | Ultimate Edition + UE Unlocker)","Full Version"],
+  requisitos: ["Sistema operativo: Windows 7 – Service Pack 1 (6.1.7601)","Procesador: Intel Core i5-2500K / AMD FX-6300","Memoria RAM: 8 GB","Gráficos: Nvidia GeForce GTX 770 2GB / AMD Radeon R9 280 3GB","Almacenamiento: 150 GB disponibles"],
+  infoJuego: ["Género: Action, Adventure","Plataforma: PC","Edición: Build 1491.50 | Ultimate Edition + UE Unlocker","Desarrollador: Rockstar Games","Tamaño del juego: 116 GB"],
+  galeria: ["https://mastersensei47.github.io/rdr2/captura%201.jpg","https://mastersensei47.github.io/rdr2/captura%202.jpg","https://mastersensei47.github.io/rdr2/captura%203.jpg"]
+},
+{
+  slug: "palworld", titulo: "PALWORLD",
+  videoIzq: "https://www.youtube.com/embed/ab5BCMTWZp8",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/JJ07iH_g1g0",
+  pesoTitulo: "PESO TOTAL 25 GB (COMPRIMIDO) - Extrae solo la primera parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/dail5ef1h5ee6xs/Palworld.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/p687nathxs0760k/Palworld.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/dt4xp1glbktbm8r/Palworld.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/3hc9robj71oget4/Palworld.7z.004/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10 o superior","Procesador: i5-3570K 3,4 GHz 4 núcleos","Memoria: 16 GB de RAM","Gráficos: GeForce GTX 1050 (2 GB)","DirectX: Versión 11","Almacenamiento: 52 GB temporales - 26 GB final"],
+  infoJuego: ["Género: Acción, Aventura, Indie, RPG, Acceso anticipado","Plataforma: PC","Versión: v0.7.2.87654","Edición: (Build 21880609) | Acceso anticipado"],
+  galeria: ["https://mastersensei47.github.io/palworld/imagen%201.jpg","https://mastersensei47.github.io/palworld/imagen%202.jpg","https://mastersensei47.github.io/palworld/imagen%203.jpg"]
+},
+{
+  slug: "bodycam", titulo: "BODYCAM",
+  videoIzq: "https://www.youtube.com/embed/xhN3CxoBEsk",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/fOMnEkhUeOM",
+  pesoTitulo: "PESO TOTAL 32 GB (COMPRIMIDO) - Extrae solo la primera parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/2ropns7jltk2tpn/Bodycam.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/cfsazxjl7ufa70v/Bodycam.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/ex4ylwoxu7ee3xm/Bodycam.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/qe917qqdwmzu3gm/Bodycam.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/rlt5muh4wuwz2we/Bodycam.7z.005/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 7 / Windows 10","Procesador: AMD Ryzen 7 3700X, Intel Core i7-9700K","Memoria: 8 GB de RAM","Gráficos: AMD Ryzen 7 3700X, Intel Core i7-9700K","Almacenamiento: 70 GB temporales - 40 GB final"],
+  infoJuego: ["Género: Acción, Indie, Multijugador masivo, Simulación, Estrategia, Acceso anticipado","Plataforma: PC","Versión: 20979480","Edición: Acceso anticipado"],
+  galeria: ["https://mastersensei47.github.io/bodycam/imagen%201.jpg","https://mastersensei47.github.io/bodycam/imagen%202.jpg","https://mastersensei47.github.io/bodycam/imagen%203.jpg"]
+},
+{
+  slug: "uncharted-legacy-of-thieves-collection", titulo: "Uncharted Legacy of Thieves Collection",
+  videoIzq: "https://www.youtube.com/embed/K8EKDkUtxJc",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/JO5Y-RGUPtA",
+  pesoTitulo: "PESO TOTAL 70 GB (COMPRIMIDO) - Extrae solo la primera parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/lhrobze2z0e17x0/Uncharted+Legacy+of+Thieves+Collection.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/fsu37med8qgl2am/Uncharted+Legacy+of+Thieves+Collection.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/165fcgv86wgjepn/Uncharted+Legacy+of+Thieves+Collection.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/rqmmyjkaepvi9v2/Uncharted+Legacy+of+Thieves+Collection.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/2t2750t2ut6ekhh/Uncharted+Legacy+of+Thieves+Collection.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/izpw1q903o7pgfl/Uncharted+Legacy+of+Thieves+Collection.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/k0ep36jkoo6mgsp/Uncharted+Legacy+of+Thieves+Collection.7z.007/file"),
+    d("Parte 8","https://www.mediafire.com/file/ar0416ot7gtrh70/Uncharted+Legacy+of+Thieves+Collection.7z.008/file"),
+    d("Parte 9","https://www.mediafire.com/file/bges8f6877e8n10/Uncharted+Legacy+of+Thieves+Collection.7z.009/file"),
+    d("Español latino","https://www.mediafire.com/file/11ev390fdhqzp2b/Uncharted4_data.7z/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10 64-bit","Procesador: Intel i5-4330, AMD Ryzen 3 1200","Memoria: 8 GB de RAM","Gráficos: NVIDIA GTX 960 (4 GB), AMD R9 290X (4 GB)","DirectX: Versión 11","Almacenamiento: 170 GB temporales - 102 GB final"],
+  infoJuego: ["Género: Aventura, Shooter, Tercera persona","Plataforma: PC","Versión: v1.3.20900.0","Edición: (Build 10158704) | Versión completa Juego directo + Actualización"],
+  galeria: ["https://mastersensei47.github.io/games./imagen1.jpeg","https://mastersensei47.github.io/games./imagen2.jpeg","https://mastersensei47.github.io/games./imagen3.jpeg"]
+},
+{
+  slug: "171", titulo: "171",
+  videoIzq: "https://www.youtube.com/embed/RXFOzlO6HY4",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/JJ07iH_g1g0",
+  pesoTitulo: "DESCARGAR (17 GB)",
+  descargas: [ d("Patch 0.5.221.213","https://www.mediafire.com/file/roj0opubp09j4cb/171_v0.5.221.213.7z/file") ],
+  verificacion: "https://drive.google.com/file/d/1UggPDGiVUkTCqvO4gswQQsHz8Wz4X5YO/preview",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10 64 Bits","Procesador: Intel Core i5 9400F / AMD Ryzen 5 2600","Memoria RAM: 16 GB","Gráficos: Nvidia GTX 1070 8GB / AMD RX 590 8GB","Almacenamiento: 17 GB disponibles"],
+  infoJuego: ["Género: Acción, Aventura, Indie, Mundo Abierto","Plataforma: PC","Edición: Patch 0.5.221.213"],
+  galeria: ["https://mastersensei47.github.io/171/captura%201.jpg","https://mastersensei47.github.io/171/captura%202.jpg","https://mastersensei47.github.io/171/captura%203.jpg"]
+},
+{
+  slug: "dragon-ball-sparking-zero", titulo: "DRAGON BALL Sparking! ZERO",
+  videoIzq: "https://www.youtube.com/embed/1kcAvsdoA38",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/IACXdUo7QLw",
+  pesoTitulo: "PESO TOTAL 28 GB (COMPRIMIDO) - Colocar todas las partes en una carpeta y descomprimir solo 1 parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/xfpqyn4s5rnd8dc/DRAGON+BALL+Sparking!+ZERO.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/s9ta0ehtmfajq38/DRAGON_BALL_Sparking%21_ZERO.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/70f95w8sv1yobis/DRAGON+BALL+Sparking!+ZERO.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/h3bl4cri79sxt4n/DRAGON+BALL+Sparking!+ZERO.7z.004/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10","Procesador: Intel Core i5-9600K / AMD Ryzen 5 2600","Memoria: 8 GB de RAM","Gráficos: Nvidia GeForce GTX 980 / AMD Radeon RX 590 / Intel Arc A750","DirectX: Versión 12","Almacenamiento: 60 GB temporales - 29 GB final"],
+  infoJuego: ["Género: Acción","Plataforma: PC","Versión: v2014.013.003.009.008","Edición: Completa + Multijugador"],
+  galeria: ["https://mastersensei47.github.io/dbsz/imagen%201.jpeg","https://mastersensei47.github.io/dbsz/imagen%202.jpeg","https://mastersensei47.github.io/dbsz/imagen%203.jpeg"]
+},
+{
+  slug: "waterpark-simulator", titulo: "Waterpark Simulator",
+  videoIzq: "https://www.youtube.com/embed/Yf1leizcoe8",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/1kcAvsdoA38",
+  pesoTitulo: "DESCOMPRIMIDO (15 GB)",
+  descargas: [ d("Build 22177034","https://www.mediafire.com/file/3x1auevy60xis4f/Waterpark.Simulator.Build.22177034.7z/file") ],
+  verificacion: "https://drive.google.com/file/d/1iUyYOw8VCzg-584cRoVgDu3F7Lk781sz/preview",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10 / 11 (64 BITS)","Procesador: Intel Core i5-8400 / AMD Ryzen 5 2600","Memoria RAM: 8 GB","Gráficos: NVIDIA GeForce GTX 1060 / AMD Radeon RX 580","Almacenamiento: 15 GB disponibles"],
+  infoJuego: ["Género: Simulación, Gestión","Plataforma: PC","Estado: Early Access","Edición: Build 22177034","Actualización: Marzo 2026"],
+  galeria: ["https://mastersensei47.github.io/waterpark-simulator/captura%201.jpg","https://mastersensei47.github.io/waterpark-simulator/captura%202.jpg","https://mastersensei47.github.io/waterpark-simulator/captura%203.jpg"]
+},
+{
+  slug: "gta-v", titulo: "GTA V",
+  videoIzq: "https://www.youtube.com/embed/KbpCWNrxjtk",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/wmozuemP_-I",
+  pesoTitulo: "DESCARGAR (232 GB TEMPORALES)",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/m82tacoyb0oqtm5/Grand+Theft+Auto+V.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/ck2s1tb2x5jpxww/Grand+Theft+Auto+V.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/mzd1ldrkyn8zw7r/Grand+Theft+Auto+V.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/43nv20z5d05v9n8/Grand+Theft+Auto+V.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/zdad5g1tal38wrk/Grand+Theft+Auto+V.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/ibved1ye2dxubor/Grand+Theft+Auto+V.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/33ue6c34cwm1hfq/Grand_Theft_Auto_V.7z.007/file"),
+    d("Parte 8","https://www.mediafire.com/file/0326muvxpy6sy1d/Grand_Theft_Auto_V.7z.008/file"),
+    d("Parte 9","https://www.mediafire.com/file/9ofhpxit79dkn5t/Grand_Theft_Auto_V.7z.009/file"),
+    d("Parte 10","https://www.mediafire.com/file/04q4vaff9atdspi/Grand+Theft+Auto+V.7z.010/file"),
+    d("Parte 11","https://www.mediafire.com/file/as5bx8hxcu1904n/Grand_Theft_Auto_V.7z.011/file"),
+    d("Parte 12","https://www.mediafire.com/file/94w2z28hn8yokgb/Grand+Theft+Auto+V.7z.012/file"),
+    d("Parte 13","https://www.mediafire.com/file/n59mrvtr4xlc92n/Grand+Theft+Auto+V.7z.013/file"),
+    d("Parte 14","https://www.mediafire.com/file/s51hf5zdzf7iyyo/Grand_Theft_Auto_V.7z.014/file"),
+    d("Parte 15","https://www.mediafire.com/file/evrcwifsea61sqa/Grand+Theft+Auto+V.7z.015/file"),
+  ],
+  verificacion: "https://drive.google.com/file/d/1qrajZ761jfdv-HgCMB-anKUBe3dlpUJo/preview",
+  contenido: ["Grand Theft Auto V / GTA 5","(v1.0.3751.0/1.72)","Full Version"],
+  requisitos: ["Sistema operativo: Windows 10/8.1/8/7 64 Bit SP1","Procesador: Intel Core 2 Quad Q6600 @ 2.40GHz / AMD Phenom 9850 Quad-Core @ 2.5GHz","Memoria RAM: 4 GB","Gráficos: NVIDIA 9800 GT 1GB / AMD HD 4870 1GB (DX 10, 10.1, 11)","Almacenamiento: 120 GB instalado (232 GB temporales durante la descarga)"],
+  infoJuego: ["Género: Action, Simulation, Open World","Plataforma: PC","Edición: v1.0.3751.0/1.72 | Full Version","Desarrollador: Rockstar Games","Tamaño del juego: 120 GB"],
+  galeria: ["https://mastersensei47.github.io/gta-v/captura%201.jpg","https://mastersensei47.github.io/gta-v/captura%202.jpg","https://mastersensei47.github.io/gta-v/captura%203.jpg"]
+},
+{
+  slug: "jump-force", titulo: "JUMP FORCE",
+  videoIzq: "https://www.youtube.com/embed/K8EKDkUtxJc",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/qcz2LxH8OQU",
+  pesoTitulo: "DESCOMPRIMIDO (23 GB)",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/sniwy1xjzpqvlc4/JUMP_FORCE.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/6qx3m2v5vfylib3/JUMP+FORCE.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/uh3kjtfdbxla2ue/JUMP_FORCE.7z.003/file"),
+  ],
+  verificacion: "https://drive.google.com/file/d/1MjJR-QusBpxO3LQlEchDwr6-Ga1mYkHJ/preview",
+  contenido: ["🎮 CHARACTERS","Monkey D. Luffy (One Piece)","Roronoa Zoro (One Piece)","Vinsmoke Sanji (One Piece)","Boa Hancock (One Piece)","Sabo (One Piece)","Blackbeard (One Piece)","Trafalgar D. Water Law (One Piece)","Naruto Uzumaki (Naruto)","Sasuke Uchiha (Naruto)","Kakashi Hatake (Naruto)","Gaara (Naruto)","Kaguya Ōtsutsuki (Naruto)","Madara Uchiha (Naruto)","Boruto Uzumaki (Boruto)","Son Goku (Dragon Ball)","Vegeta (Dragon Ball)","Piccolo (Dragon Ball)","🎁 DLCs","Characters Pass","Characters Pass 2","Character Pack 14: Giorno Giovanna","Character Pack 13: Yoruichi Shihoin","Character Pack 12: Hiei","Character Pack 11: Meruem","Character Pack 10: Shoto Todoroki","Character Pack 9: Trafalgar Law","Character Pack 8: Grimmjow Jaegerjaquez","Character Pack 7: Madara Uchiha","Character Pack 6: Toshiro Hitsugaya","Character Pack 5: Katsuki Bakugo","Character Pack 4: Majin Buu (Good)","Character Pack 3: All Might","Character Pack 2: Biscuit Krueger","Character Pack 1: Seto Kaiba"],
+  requisitos: ["Sistema operativo: Windows 7/8/10 (64 BITS)","Procesador: Intel Core i5-2300 / AMD A10-7850K","Memoria RAM: 4 GB","Gráficos: NVIDIA GTX 660 Ti / AMD Radeon HD 7950","Almacenamiento: 17 GB disponibles"],
+  infoJuego: ["Género: Acción, Lucha, Anime","Plataforma: PC","Edición: Full Version + All DLCs","Lanzamiento: 2019"],
+  galeria: ["https://mastersensei47.github.io/JUMP-FORCE/captura%201.jpg","https://mastersensei47.github.io/JUMP-FORCE/captura%202.jpg","https://mastersensei47.github.io/JUMP-FORCE/captura%203.jpg"]
+},
+{
+  slug: "fnaf-security-breach", titulo: "Five Nights at Freddy's: Security Breach",
+  fondo: "fondo.jpg",
+  videoIzq: "https://www.youtube.com/embed/iI8xvJYKsnM",
+  videoCentro: "https://www.youtube.com/embed/zYhwFb_Xjcs",
+  videoDer: "https://www.youtube.com/embed/wmozuemP_-I",
+  pesoTitulo: "DESCOMPRIMIDO (90 GB) solo la parte 1 tiene acortador",
+  descargas: [
+    d("Parte 1","https://cuty.io/Fnf47"),
+    d("Parte 2","https://www.mediafire.com/file/l3veh7dxfffrg4k/FNaFSB.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/ahxqoqfynpb8zmr/FNaFSB.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/xt06egd850zeet5/FNaFSB.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/knoiywdq90j7eld/FNaFSB.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/5yennfflnsw1udi/FNaFSB.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/d3x8plgwagyde4l/FNaFSB.7z.007/file"),
+  ],
+  verificacion: "https://drive.google.com/file/d/1Z6nyo65DBNhGvtfszrz-x43wDOpsKdrg/preview",
+  contenido: ["🎮 PERSONAJES / ENEMIGOS","Glamrock Freddy","Glamrock Chica","Roxanne Wolf","Montgomery Gator","Gregory","Vanessa (Security Guard)","🎁 DLCs","Five Nights at Freddy's: Security Breach – RUIN"],
+  requisitos: ["Sistema operativo: Windows 10 (64 BITS)","Procesador: AMD Ryzen 5 3600 / Intel Core i5-6600K","Memoria RAM: 8 GB","Gráficos: NVIDIA GeForce GTX 1050 Ti","Almacenamiento: 80 GB disponibles"],
+  infoJuego: ["Género: Acción, Aventura, Terror","Plataforma: PC","Edición: Build 11904663 | Full Version","Tamaño: 56.7 GB","Lanzamiento: 2021"],
+  galeria: ["captura%201.jpg","captura%202.jpg","captura%203.jpg"]
+},
+{
+  slug: "watch-dogs-2", titulo: "Watch Dogs 2",
+  videoIzq: "https://www.youtube.com/embed/8zIDzPJnzpY",
+  videoCentro: "",
+  videoDer: "https://www.youtube.com/embed/KbpCWNrxjtk",
+  pesoTitulo: "PESO TOTAL 42GB (COMPRIMIDO)",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/36so8akgbs8rs3r/Watch+Dogs+2.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/rtj1x8wdm3clyk2/Watch+Dogs+2.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/wl6kk185nudoahk/Watch+Dogs+2.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/2m568v5y4cd80m6/Watch_Dogs_2.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/9zzvwax6hcsd2wy/Watch+Dogs+2.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/mr7qswnpbekpgd9/Watch_Dogs_2.7z.006/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: [],
+  infoJuego: ["Colocar todas las partes en una carpeta y descomprimir solo una."],
+  galeria: ["https://mastersensei47.github.io/JUEGOSms47/imagen_1.jpeg","https://mastersensei47.github.io/JUEGOSms47/imagen%202.jpeg","https://mastersensei47.github.io/JUEGOSms47/imagen%203.jpeg"]
+},
+{
+  slug: "fifa-22", titulo: "FIFA 22",
+  videoIzq: "https://www.youtube.com/embed/x57gtXHlS34",
+  videoCentro: "",
+  videoDer: "https://www.youtube.com/embed/so9N4dW6O3Q",
+  pesoTitulo: "PESO TOTAL 52,2 GB (COMPRIMIDO) - Colocar todas las partes en una carpeta y descomprimir solo 1 parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/gy9dz3tyt9guilx/FIFA_22.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/q1xpr06xwtb6i3l/FIFA+22.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/zkfyiprvu7o7fte/FIFA+22.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/f7fwq6g1lgwqcjo/FIFA+22.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/5hssh8vltn3vppd/FIFA+22.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/tkg9kh4jxkgv8ia/FIFA+22.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/3gb5849rdkxqsk2/FIFA+22.7z.007/file"),
+  ],
+  verificacion: "",
+  contenido: [],
+  requisitos: ["Sistema operativo: Windows 10 - 64-Bit (Latest Update)","Procesador: Intel Core i3-6100 @ 3.7GHz o AMD Athlon X4 880K @4GHz","Memoria: 8 GB de RAM","Gráficos: NVIDIA GTX 660 2GB o AMD Radeon HD 7850 2GB","Almacenamiento: temporal 110 GB, luego de descomprimir y borrar las partes 60 GB"],
+  infoJuego: [],
+  galeria: ["https://mastersensei47.github.io/GAMES/imagen%201.jpeg","https://mastersensei47.github.io/GAMES/imagen%202.jpeg","https://mastersensei47.github.io/GAMES/imagen%203.jpg"]
+},
+{
+  slug: "mk11", titulo: "MORTAL KOMBAT 11",
+  videoIzq: "https://www.youtube.com/embed/K8EKDkUtxJc",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/wmozuemP_-I",
+  pesoTitulo: "PESO TOTAL 131 GB (COMPRIMIDO) - Extrae solo la primera parte",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/paquzegbhzvu4cp/Mortal+Kombat+11.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/rvjdhabrsfolq1x/Mortal+Kombat+11.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/408hw9qq4kp2w8z/Mortal+Kombat+11.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/izs7cvdp1g0nhr6/Mortal_Kombat_11.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/peu57q51lm7ow0w/Mortal+Kombat+11.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/7syohe4en404dkj/Mortal+Kombat+11.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/ja5z9dbeh1ny7pc/Mortal+Kombat+11.7z.007/file"),
+    d("Parte 8","https://www.mediafire.com/file/s64o3jvekkl1mjr/Mortal+Kombat+11.7z.008/file"),
+    d("Parte 9","https://www.mediafire.com/file/9xxxog5xmwlrhp3/Mortal+Kombat+11.7z.009/file"),
+    d("Parte 10","https://www.mediafire.com/file/bsycftwc7jfdbpz/Mortal+Kombat+11.7z.010/file"),
+    d("Parte 11","https://www.mediafire.com/file/ph4vpun5i6ttjqy/Mortal+Kombat+11.7z.011/file"),
+    d("Parte 12","https://www.mediafire.com/file/jimyyoxby28nq5x/Mortal+Kombat+11.7z.012/file"),
+    d("Parte 13","https://www.mediafire.com/file/2pvxbxfngypn3ud/Mortal+Kombat+11.7z.013/file"),
+    d("Parte 14","https://www.mediafire.com/file/n0jxp00fp0zkiiv/Mortal+Kombat+11.7z.014/file"),
+    d("Parte 15","https://www.mediafire.com/file/3z65uio54acqnjp/Mortal+Kombat+11.7z.015/file"),
+    d("Parte 16","https://www.mediafire.com/file/s5cipjhxg6q764t/Mortal+Kombat+11.7z.016/file"),
+    d("Parte 17","https://www.mediafire.com/file/psp4xstlqw8lk5r/Mortal+Kombat+11.7z.017/file"),
+  ],
+  verificacion: "",
+  contenido: ["Shao Kahn","Frost","Kombat Pack 1","Kold War Skarlet","Cangaceiro Kano","Gold Demon Scorpion","Ninja Mime Johnny Cage","Shang Tsung","Klassic Ninja Skins (Skin Pack 1)","Shang Tsung Movie Skins","Nightwolf","Klassic Arcade Fighter Pack","War Games Sonya Blade","Terminator T-800","Double Feature Skin Pack","Cassie Quinn","Masquerade Skin Pack","Sindel","Gothic Horror Skin Pack","Classic Cassie","The Joker","Time Lord of Apokolips Geras","DC Elseworlds Skin Pack","Spawn","Hellspawn Jacqui","Matinee Skin Pack","Mortal Kombat 11: Aftermath + Kombat Pack Bundle","Mortal Kombat 11: Aftermath Expansion","Fujin","Sheeva","Robocop","Robocop 3 Skin","Eternal Klash Skin Pack","Thanks A Million Johnny Cage","Summer Heat Skin Pack","Classic Femme Fatale Skin Pack","All Hallows' Eve Skin Pack","Kombat Pack 2","Rain","Mileena","Rambo","Time Warriors Skin Pack","4K Cinematic Pack","Ultimate Add-On Bundle","Klassic MK Movie Skin Pack"],
+  requisitos: ["Sistema operativo: Windows 7 / Windows 10","Procesador: Intel Core i5-750 2,66 GHz / AMD Phenom II X4 965 3,4 GHz o AMD Ryzen 3 1200 3,1 GHz","Memoria: 8 GB de RAM","Gráficos: NVIDIA GeForce GTX 670 o GTX 1050 / AMD Radeon HD 7950","DirectX: Versión 11","Almacenamiento: 281 GB temporales - 140 GB final"],
+  infoJuego: ["Género: Acción","Plataforma: PC","Versión: v0.384-34-CL237394","Edición: BUILD 8418155 + todos los complementos"],
+  galeria: ["https://mastersensei47.github.io/mk11/imagen%201.jpeg","https://mastersensei47.github.io/mk11/imagen%202.jpeg","https://mastersensei47.github.io/mk11/imagen%203.jpeg"]
+},
+{
+  slug: "resident-evil-4", titulo: "RESIDENT EVIL 4",
+  videoIzq: "https://www.youtube.com/embed/K8EKDkUtxJc",
+  videoCentro: "https://www.youtube.com/embed/yc_narOXOOY",
+  videoDer: "https://www.youtube.com/embed/wmozuemP_-I",
+  pesoTitulo: "DESCARGAR (140 GB temporales)",
+  descargas: [
+    d("Parte 1","https://www.mediafire.com/file/ox6zcske06mb5tb/RESIDENT_EVIL_4.7z.001/file"),
+    d("Parte 2","https://www.mediafire.com/file/ejuhqhlgzmcx7ex/RESIDENT+EVIL+4.7z.002/file"),
+    d("Parte 3","https://www.mediafire.com/file/i55xefbatm9dhkw/RESIDENT_EVIL_4.7z.003/file"),
+    d("Parte 4","https://www.mediafire.com/file/xhjucbk4flk3qdy/RESIDENT_EVIL_4.7z.004/file"),
+    d("Parte 5","https://www.mediafire.com/file/emi0def0gvaa9dm/RESIDENT_EVIL_4.7z.005/file"),
+    d("Parte 6","https://www.mediafire.com/file/l03xw8gvzeyx4ns/RESIDENT+EVIL+4.7z.006/file"),
+    d("Parte 7","https://www.mediafire.com/file/suqs5drh8j4t4g3/RESIDENT+EVIL+4.7z.007/file"),
+    d("Parte 8","https://www.mediafire.com/file/86o7q6hztl39zql/RESIDENT+EVIL+4.7z.008/file"),
+    d("Parte 9","https://www.mediafire.com/file/vo0z6cekfo0xc9h/RESIDENT+EVIL+4.7z.009/file"),
+  ],
+  verificacion: "https://drive.google.com/file/d/1F7LJJjLlo0Bja5BT2bVfhwuSQd7MTndK/preview",
+  contenido: ["Resident Evil 4 2023 – Separate Ways","Resident Evil 4 Treasure Map: Expansion","Resident Evil 4 Leon & Ashley Costumes: 'Casual'","Resident Evil 4 Leon & Ashley Costumes: 'Romantic'","Resident Evil 4 Leon Costume & Filter: 'Hero'","Resident Evil 4 Leon Costume & Filter: 'Villain'","Resident Evil 4 'Original Ver.' Soundtrack Swap","Resident Evil 4 Deluxe Weapon: 'Sentinel Nine'","Resident Evil 4 Deluxe Weapon: 'Skull Shaker'","Resident Evil 4 Leon Accessory: 'Sunglasses (Sporty)'","Resident Evil 4 Attache Case: 'Gold'","Resident Evil 4 Attache Case: 'Classic'","Resident Evil 4 Charm: 'Handgun Ammo'","Resident Evil 4 Charm: 'Green Herb'","Resident Evil 4 – The Mercenaries","Weapon Exclusive Upgrade Tickets (varios)"],
+  requisitos: ["Sistema operativo: Windows 10 (64 BITS)","Procesador: AMD Ryzen 3 1200 / Intel Core i5-7500","Memoria RAM: 8 GB","Gráficos: AMD Radeon RX 560 4GB / NVIDIA GTX 1050 Ti 4GB","Almacenamiento: 140 GB temporales - 75 GB final"],
+  infoJuego: ["Género: Action, Adventure","Plataforma: PC","Edición: Build 22154679 | Full Version + All DLCs"],
+  galeria: ["https://mastersensei47.github.io/RESIDENTEVIL4/captura%201.jpg","https://mastersensei47.github.io/RESIDENTEVIL4/captura%202.jpg","https://mastersensei47.github.io/RESIDENTEVIL4/captura%203.jpg"]
+},
+];
+
+function pintarLista(){
+  const cont = document.getElementById("lista");
+  cont.innerHTML = "";
+  juegos.forEach(j => {
+    const row = document.createElement("div");
+    row.className = "item";
+    row.id = "row-" + j.slug;
+    row.innerHTML = `<span>${j.titulo}</span><span class="pending" id="estado-${j.slug}">pendiente</span>`;
+    cont.appendChild(row);
+  });
+}
+
+document.getElementById("btnImportar").addEventListener("click", async () => {
+  const btn = document.getElementById("btnImportar");
+  btn.disabled = true;
+  btn.textContent = "Importando...";
+  for(const j of juegos){
+    const estadoEl = document.getElementById("estado-" + j.slug);
+    estadoEl.textContent = "subiendo...";
+    try{
+      const { slug, ...data } = j;
+      await set(ref(db, "paginasJuegos/" + slug), data);
+      estadoEl.textContent = "✔ importado";
+      estadoEl.className = "ok";
+    }catch(err){
+      console.error(err);
+      estadoEl.textContent = "✕ error";
+      estadoEl.className = "err";
+    }
+  }
+  btn.textContent = "Listo";
+});
+</script>
+</body>
+</html>

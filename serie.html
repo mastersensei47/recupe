@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS47</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b; --card:#151517; --card2:#1b1b1e; --line:#262629;
+  --accent:#ff2b3d; --accent2:#00e5c7; --text:#f2f2f2; --muted:#9a9aa0;
+}
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter', Arial, sans-serif; }
+body{ background:var(--bg); color:var(--text); overflow-x:hidden; }
+h1,h2{ font-family:'Poppins',Arial,sans-serif; }
+
+/* ===== NAVBAR ===== */
+.navbar{ width:100%; background:rgba(10,10,11,0.8); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); position:fixed; top:0; left:0; z-index:1000; border-bottom:1px solid var(--line); }
+.nav-container{ max-width:1400px; margin:auto; display:flex; flex-direction:column; align-items:center; padding:10px; }
+.logo{ font-size:22px; font-weight:800; color:#fff; text-shadow:0 0 12px rgba(255,43,61,0.6); text-decoration:none; margin-bottom:8px; letter-spacing:1px; }
+.nav-links{ display:flex; gap:8px; justify-content:center; width:100%; flex-wrap:wrap; }
+.nav-links a{ color:#fff; text-decoration:none; background:var(--card2); width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:1px solid var(--line); transition:0.2s; }
+.nav-links a:hover{ border-color:var(--accent); }
+.btn-jugar{ border-color:#00e676 !important; }
+
+@media(min-width:769px){
+  .nav-container{ flex-direction:row; padding:12px 20px; }
+  .logo{ margin-bottom:0; margin-right:20px; }
+  .nav-links{ width:auto; }
+  .nav-links a{ border-radius:20px; width:auto; height:auto; padding:8px 14px; font-size:13px; font-weight:600; }
+  .nav-links a span{ display:inline; margin-left:6px; }
+}
+
+main{ margin-top:150px; padding:0 0 60px; max-width:1100px; margin-left:auto; margin-right:auto; }
+@media(min-width:769px){ main{ margin-top:80px; } }
+main.fade-in{ animation:fadeIn 0.5s ease; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+/* ===== FICHA ===== */
+.ficha{ position:relative; padding:36px 20px; margin-bottom:26px; overflow:hidden; }
+.ficha-fondo{ position:absolute; inset:0; background-size:cover; background-position:center; filter:blur(2px) brightness(0.5); transform:scale(1.05); z-index:0; overflow:hidden; }
+.ficha-fondo.ficha-fondo-video{ filter:none; transform:none; background-image:none !important; }
+.ficha-fondo-video video{ width:100%; height:100%; object-fit:cover; filter:blur(2px) brightness(0.5); transform:scale(1.05); }
+.ficha-fondo-video iframe{ position:absolute; top:50%; left:50%; width:177.78vh; height:56.25vw; min-width:100%; min-height:100%; transform:translate(-50%,-50%) scale(1.05); filter:blur(2px) brightness(0.5); pointer-events:none; border:none; }
+.ficha-fondo::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,10,11,0.3) 0%, var(--bg) 92%); z-index:1; }
+.ficha-contenido{ position:relative; z-index:1; display:flex; gap:26px; flex-wrap:wrap; align-items:flex-end; max-width:1100px; margin:0 auto; padding:0 20px; }
+.ficha-poster{ width:150px; min-width:150px; border-radius:14px; overflow:hidden; box-shadow:0 12px 35px rgba(0,0,0,0.6); border:1px solid var(--line); }
+.ficha-poster img{ width:100%; display:block; aspect-ratio:2/3; object-fit:cover; }
+.ficha-info{ flex:1; min-width:220px; }
+.ficha-info h1{ font-size:28px; font-weight:800; text-shadow:0 2px 12px rgba(0,0,0,0.8); margin-bottom:10px; }
+.ficha-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.tag{ background:var(--card2); border:1px solid var(--line); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; color:#dcdce0; }
+.tag.tipo{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.ficha-sinopsis{ color:var(--muted); font-size:14px; line-height:1.6; max-width:700px; }
+
+/* ===== REPRODUCTOR ===== */
+.contenido-central{ padding:0 20px; max-width:900px; margin:0 auto; }
+.reproductor-box{ background:#000; border-radius:14px; overflow:hidden; border:1px solid var(--line); box-shadow:0 12px 35px rgba(255,43,61,0.15); margin-bottom:22px; }
+.video-container{ position:relative; padding-top:56.25%; background:#000; }
+.video-container iframe{ position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+.video-container video{ position:absolute; top:0; left:0; width:100%; height:100%; background:#000; }
+
+.info-capitulo{ padding:14px 18px; background:var(--card); border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.info-capitulo h2{ font-size:15px; color:#fff; font-weight:700; }
+.badge-tipo{ font-size:11px; padding:5px 12px; border-radius:20px; font-weight:700; letter-spacing:0.3px; }
+.badge-tipo.youtube{ background:var(--accent); }
+.badge-tipo.drive{ background:#1a73e8; }
+.badge-tipo.archivo{ background:#666; }
+
+.bloque-titulo{ display:flex; align-items:center; gap:10px; margin:6px 0 14px; }
+.bloque-titulo h2{ font-size:15px; font-weight:700; color:#fff; }
+.bloque-titulo .linea{ flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent); }
+
+.grid-capitulos{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.cap-btn{ background:var(--card2); border:1px solid var(--line); color:white; padding:13px 6px; text-align:center; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px; transition:0.2s; }
+.cap-btn:hover{ background:#232326; border-color:var(--accent2); }
+.cap-btn.active{ background:var(--accent); border-color:var(--accent); box-shadow:0 6px 18px rgba(255,43,61,0.4); }
+
+@media(min-width:769px){ .grid-capitulos{ grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); } }
+
+.estado-box{ text-align:center; margin-top:120px; color:var(--muted); font-size:16px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+.spinner{ width:34px; height:34px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--accent); animation:girar 0.8s linear infinite; }
+@keyframes girar{ to{ transform:rotate(360deg); } }
+.estado-icono{ font-size:34px; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">MS47</a>
+    <div class="nav-links">
+      <a href="index.html">🎮<span>Juegos</span></a>
+      <a href="https://gam.onl/" target="_blank" class="btn-jugar">🕹️<span>Online</span></a>
+      <a href="https://www.youtube.com/@master-sensei47" target="_blank">🎬<span>YT</span></a>
+      <a href="https://www.instagram.com/master__sensei47" target="_blank">📸<span>IG</span></a>
+      <a href="https://www.tiktok.com/@mastersensei47" target="_blank">📱<span>TK</span></a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div class="estado-box" id="estado">
+    <div class="spinner"></div>
+    <p>Cargando...</p>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBjQB3yJdJPc44qvmge-H_961QJ1s_kh7E",
+    authDomain: "tv-fulvo.firebaseapp.com",
+    projectId: "tv-fulvo",
+    storageBucket: "tv-fulvo.firebasestorage.app",
+    messagingSenderId: "733955226142",
+    appId: "1:733955226142:web:d49871efff59452b604c0f",
+    databaseURL: "https://tv-fulvo-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function esc(str){
+  const div = document.createElement("div");
+  div.innerText = str || "";
+  return div.innerHTML;
+}
+
+function renderReproductor(cap, autoplay){
+  if(cap.tipo === "youtube"){
+    return `<iframe id="video-player" src="https://www.youtube.com/embed/${cap.id}?rel=0${autoplay ? "&autoplay=1" : ""}" allowfullscreen></iframe>`;
+  }
+  if(cap.tipo === "archivo"){
+    return `<video id="video-player" src="${cap.id}" controls playsinline ${autoplay ? "autoplay" : ""}></video>`;
+  }
+  return `<iframe id="video-player" src="https://drive.google.com/file/d/${cap.id}/preview?t=${Date.now()}" allowfullscreen></iframe>`;
+}
+
+function badgeInfo(tipo){
+  if(tipo === "youtube") return { clase:"youtube", texto:"YouTube" };
+  if(tipo === "archivo") return { clase:"archivo", texto:"Video" };
+  return { clase:"drive", texto:"Drive" };
+}
+
+function detectarFondoTipo(url){
+  if(!url) return null;
+  if(/\.(mp4|webm|ogg|ogv|mov|m3u8)(\?.*)?$/i.test(url)) return "video-archivo";
+  if(/youtu\.be|youtube\.com/i.test(url)) return "video-youtube";
+  return "imagen";
+}
+
+function extraerYoutubeId(url){
+  const watchMatch = url.match(/[?&]v=([^&]+)/);
+  const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+  const embedMatch = url.match(/embed\/([^?&]+)/);
+  if(watchMatch) return watchMatch[1];
+  if(shortMatch) return shortMatch[1];
+  if(embedMatch) return embedMatch[1];
+  return url.trim();
+}
+
+function fichaFondoHtml(url){
+  const tipo = detectarFondoTipo(url);
+  if(!tipo) return "";
+  if(tipo === "video-archivo"){
+    return `<div class="ficha-fondo ficha-fondo-video"><video autoplay muted loop playsinline src="${url}"></video></div>`;
+  }
+  if(tipo === "video-youtube"){
+    const id = extraerYoutubeId(url);
+    return `<div class="ficha-fondo ficha-fondo-video"><iframe src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3" allow="autoplay; encrypted-media"></iframe></div>`;
+  }
+  return `<div class="ficha-fondo" style="background-image:url('${url}')"></div>`;
+}
+
+let serieActual = null;
+let tituloSerie = "";
+
+window.cambiarCapitulo = function(index){
+  const cap = serieActual[index];
+  if(!cap) return;
+
+  document.getElementById("video-container").innerHTML = renderReproductor(cap, true);
+
+  document.getElementById("titulo-display").innerText = `${tituloSerie} - ${cap.label}`;
+  const info = badgeInfo(cap.tipo);
+  const badge = document.getElementById("badge-tipo");
+  badge.textContent = info.texto;
+  badge.className = "badge-tipo " + info.clase;
+
+  document.querySelectorAll(".cap-btn").forEach(btn => btn.classList.remove("active"));
+  const btn = document.getElementById("capbtn-" + index);
+  if(btn) btn.classList.add("active");
+
+  document.querySelector(".reproductor-box").scrollIntoView({ behavior:"smooth", block:"start" });
+};
+
+async function cargarSerie(){
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
+  const main = document.getElementById("main");
+
+  if(!slug){
+    main.innerHTML = `<div class="estado-box"><div class="estado-icono">🔗</div><p>No se especificó ninguna serie (falta ?slug= en el link).</p></div>`;
+    return;
+  }
+
+  try{
+    const snap = await get(ref(db, "paginasSeries/" + slug));
+    if(!snap.exists()){
+      main.innerHTML = `<div class="estado-box"><div class="estado-icono">📺</div><p>Esta serie no existe o fue eliminada.</p></div>`;
+      return;
+    }
+
+    const s = snap.val();
+    const capitulos = (s.capitulos || []).filter(c => c && c.id);
+    serieActual = capitulos;
+    tituloSerie = s.titulo || "MS47";
+    document.title = `${tituloSerie} - MS47`;
+
+    if(capitulos.length === 0){
+      main.innerHTML = `<div class="estado-box"><div class="estado-icono">🎬</div><p>Todavía no hay capítulos cargados acá.</p></div>`;
+      return;
+    }
+
+    const esPelicula = s.tipo === "pelicula" || capitulos.length === 1;
+
+    // ---- Ficha ----
+    let fichaHtml = `<section class="ficha">`;
+    if(s.fondo){
+      fichaHtml += fichaFondoHtml(s.fondo);
+    }
+    fichaHtml += `<div class="ficha-contenido">`;
+    if(s.poster){
+      fichaHtml += `<div class="ficha-poster"><img src="${s.poster}" alt=""></div>`;
+    }
+    fichaHtml += `<div class="ficha-info">`;
+    fichaHtml += `<h1>${esc(tituloSerie)}</h1>`;
+    fichaHtml += `<div class="ficha-tags">`;
+    fichaHtml += `<span class="tag tipo">${esPelicula ? "🎬 Película" : "📺 Serie"}</span>`;
+    if(s.anio) fichaHtml += `<span class="tag">${esc(s.anio)}</span>`;
+    if(s.genero) fichaHtml += `<span class="tag">${esc(s.genero)}</span>`;
+    if(!esPelicula) fichaHtml += `<span class="tag">${capitulos.length} capítulos</span>`;
+    fichaHtml += `</div>`;
+    if(s.sinopsis) fichaHtml += `<p class="ficha-sinopsis">${esc(s.sinopsis)}</p>`;
+    fichaHtml += `</div></div></section>`;
+
+    // ---- Reproductor ----
+    const badgeInicial = badgeInfo(capitulos[0].tipo);
+    let cuerpoHtml = `<div class="contenido-central">`;
+    cuerpoHtml += `
+      <section class="reproductor-box">
+        <div class="video-container" id="video-container">
+          ${renderReproductor(capitulos[0], false)}
+        </div>
+        <div class="info-capitulo">
+          <h2 id="titulo-display">${esc(tituloSerie)}${esPelicula ? "" : " - " + esc(capitulos[0].label)}</h2>
+          <span class="badge-tipo ${badgeInicial.clase}" id="badge-tipo">${badgeInicial.texto}</span>
+        </div>
+      </section>`;
+
+    if(!esPelicula){
+      let botonesHtml = "";
+      capitulos.forEach((cap, i) => {
+        botonesHtml += `<div class="cap-btn${i===0 ? " active" : ""}" id="capbtn-${i}" onclick="cambiarCapitulo(${i})">${esc(cap.label)}</div>`;
+      });
+      cuerpoHtml += `<div class="bloque-titulo"><h2>Capítulos</h2><div class="linea"></div></div><div class="grid-capitulos">${botonesHtml}</div>`;
+    }
+    cuerpoHtml += `</div>`;
+
+    main.innerHTML = fichaHtml + cuerpoHtml;
+    main.classList.add("fade-in");
+  }catch(err){
+    console.error(err);
+    main.innerHTML = `<div class="estado-box"><div class="estado-icono">⚠️</div><p>Ocurrió un error al cargar la serie.</p></div>`;
+  }
+}
+
+cargarSerie();
+</script>
+
+</body>
+</html>
